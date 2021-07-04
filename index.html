@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="reset.css">
+</head>
+
+<body>
+  <!--surround the select box with a "custom-select" DIV element. Remember to set the width:-->
+  <div class="custom-select-wrapper">
+    <div class="custom-select">
+      <div class="custom-select__trigger"><span>--- Select a Sequence ---</span>
+        <div class="arrow"></div>
+      </div>
+      <div class="custom-options">
+        <span class="custom-option" data-value="fibonacci">Fibonacci</span>
+        <span class="custom-option" data-value="perfectSquare">Perfect Square</span>
+        <span class="custom-option" data-value="prime">Prime</span>
+        <span class="custom-option" data-value="polindrome">Polindrome</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="checkbox-wrapper">
+    <label for="1" class="checkbox__item">
+      <input type="checkbox" id="1">
+      1
+    </label>
+    <label for="2" class="checkbox__item">
+      <input type="checkbox" id="2">
+      2
+    </label>
+    <label for="3" class="checkbox__item">
+      <input type="checkbox" id="3">
+      3
+    </label>
+    <label for="4" class="checkbox__item">
+      <input type="checkbox" id="4">
+      4
+    </label>
+    <label for="5" class="checkbox__item">
+      <input type="checkbox" id="5">
+      5
+    </label>
+    <label for="6" class="checkbox__item">
+      <input type="checkbox" id="6">
+      6
+    </label>
+    <label for="7" class="checkbox__item">
+      <input type="checkbox" id="7">
+      7
+    </label>
+    <label for="8" class="checkbox__item">
+      <input type="checkbox" id="8">
+      8
+    </label>
+    <label for="9" class="checkbox__item">
+      <input type="checkbox" id="9">
+      9
+    </label>
+    <label for="10" class="checkbox__item">
+      <input type="checkbox" id="10">
+      10
+    </label>
+  </div>
+  <div>
+    <label for="min">Range from </label>
+    <input type="text" name="min" id="min" class="digit-range" onkeyup="this.value=this.value.replace(/[^\d]+/,'')" placeholder="Min" required>
+    <label for="min">to </label>
+    <input type="text" name="max" id="max" class="digit-range" onkeyup="this.value=this.value.replace(/[^\d]+/,'')" placeholder="Max" required>
+  </div>
+  <button class="submit">Generate List</button>
+  <div class="sequence-output"></div>
+  <script src="main.js"></script>
+</body>
+
+</html>
