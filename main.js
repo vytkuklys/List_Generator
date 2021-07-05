@@ -30,8 +30,28 @@ const handleClickGenerateList = () => {
     const digits = getCheckedDigits();
     const range = getRangeOfDigits();
     if (isFormFilledCorrectly(sequence, digits, range)) {
-        window[`handle${sequence}List`](digits, range);
+        var t0 = performance.now()
+        handleList(sequence, digits, range);
+        var t1 = performance.now()
+        console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
     }
+}
+const getCheckedDigits = () => {
+    const checkboxItems = document.querySelectorAll('input[type="checkbox"]');
+    const digits = [];
+    checkboxItems.forEach(item => {
+        item.checked ? digits.push(parseInt(item.id)) : ""
+    })
+    return digits;
+}
+
+const getRangeOfDigits = () => {
+    const items = document.querySelectorAll('.digit-range');
+    const range = [];
+    items.forEach(item => {
+        item.value ? range.push(parseInt(item.value)) : "";
+    })
+    return range;
 }
 
 const isFormFilledCorrectly = (sequence, digits, range) => {
@@ -60,66 +80,46 @@ const isRangeEmpty = (range) => {
     return range.length === 2 && (!range[0] && range[0] !== 0) && (!range[1] && range[1] !== 0);
 }
 
-const getCheckedDigits = () => {
-    const checkboxItems = document.querySelectorAll('input[type="checkbox"]');
-    const digits = [];
-    checkboxItems.forEach(item => {
-        item.checked ? digits.push(parseInt(item.id)) : ""
-    })
-    return digits;
-}
-
-const getRangeOfDigits = () => {
-    const items = document.querySelectorAll('.digit-range');
-    const range = [];
-    items.forEach(item => {
-        item.value ? range.push(parseInt(item.value)) : "";
-    })
-    return range;
-}
-
-function handleFibonacciList(digits, range) {
-    console.log("hi")
+function handleList(sequence, digits, range) {
     const digitsArr = [];
-    if(isArrayEmpty(digits)){
-        digitsArr = getRangeDigits(range);
-    }else{
+    if (isArrayEmpty(digits)) {
+        digitsArr.push(...getRangeDigits(range));
+    } else {
         digitsArr.push(...digits);
     }
-
-    digitsArr.forEach(digit=>{
-        console.log(digits)
-        if(isArrayEmpty(digit)){
-            const arr = getFibonacci(1, range);
+    digitsArr.forEach(digit => {
+        if (isArrayEmpty(digit)) {
+            console.log(`get${sequence}Items`)
+            const arr = window[`get${sequence}Items`](1, range);
             console.log(arr)
-        }else{
-            const arr = getFibonacci(digit, range);
+        } else {
+            console.log(`get${sequence}Items`)
+            const arr = window[`get${sequence}Items`](digit, range);
             console.log(arr)
         }
-        // console.log(isArrayEmpty(digits), "isEmpty?")
     })
 }
 
-const getRangeDigits = (range) =>{
+const getRangeDigits = (range) => {
     const digits = [];
     let minDigits = getDigitCount(range[0]);
     let maxDigits = getDigitCount(range[1]);
-    while(minDigits <= maxDigits){
+    while (minDigits <= maxDigits) {
         digits.push(minDigits++);
     }
     return digits;
 }
 
-const getDigitCount = (digit)=>{
+const getDigitCount = (digit) => {
     let count = 0;
-    while(digit > 0){
+    while (digit > 0) {
         count++;
         digit = Math.floor(digit / 10);
     }
     return count;
 }
 
-const getFibonacci = (digit, range) => {
+function getFibonacciItems(digit, range) {
     const arr = [getFirstFibonacciValue(digit)];
     const MAX = getMaxValue(digit, range[1]);
     const MIN = getMinValue(digit, range[0]);
@@ -144,7 +144,7 @@ const getMinValue = (digits, min = 0) => {
 
 const getFirstFibonacciValue = (digits) => {
     const values = {
-        1: 0,
+        1: 1,
         2: 13,
         3: 144,
         4: 1597,
@@ -174,10 +174,6 @@ const getSecondFibonnaciValue = (digits) => {
     return values[digits];
 }
 
-const isNotNaN = digit => {
-    return digit === digit;
-}
-
 const renderFib = (arr) => {
     const output = document.querySelector('.sequence-output');
     const size = arr.length;
@@ -186,6 +182,92 @@ const renderFib = (arr) => {
     }
 }
 
+function getPerfectSquareItems(digit, range) {
+    const MIN = getMinValue(digit, range[0]);
+    const MAX = getMaxValue(digit, range[1]);
+    const arr = [];
+    for (let i = MIN; i <= MAX; i++) {
+        if (i >= 0) {
+            let root = Math.sqrt(i);
+            if (Number.isInteger(root)) {
+                arr.push(i)
+            }
+        }
+    }
+    return arr;
+}
+
+function getPrimeItems(digit, range) {
+    const MIN = getMinValue(digit, range[0]);
+    const MAX = getMaxValue(digit, range[1]);
+
+    const arr = [],
+        limit = Math.sqrt(MAX),
+        result = [];
+    for (let i = MIN; i < MAX; i++) {
+        arr.push(true);
+    }
+    for (let i = 2; i <= limit; i++) {
+        if (arr[i]) {
+            for (var j = i * i; j < MAX; j += i) {
+                arr[j] = false;
+            }
+        }
+    }
+    for (let i = 2; i < MAX; i++) {
+        if (arr[i]) {
+            result.push(i);
+        }
+    }
+
+    return result;
+};
+
+function getPalindromeItems(digit, range) {
+    let min = getMinValue(digit, range[0]);
+    const MAX = getMaxValue(digit, range[1]);
+    const result = [];
+    if (min < 11) {
+        min = 11;
+    }
+    for (let i = min; i <= MAX; i++) {
+
+        if (parseFloat(
+                i
+                .toString()
+                .split('')
+                .reverse()
+                .join('')
+            ) === i) {
+            result.push(i);
+        }
+    }
+    return result;
+}
+
+function getCatalanItems(digit, range) {
+    const arr = [];
+    const MAX = getMaxValue(digit, range[1]);
+    const MIN = getMinValue(digit, range[0]);
+    let catalan = 0;
+    console.log(MAX, "-max", MIN, "-min")
+    for (let i = 0; catalan <= MAX; i++) {
+        catalan = getFactorial(i*2)/(getFactorial(i+1)*getFactorial(i));
+        arr.push(catalan);
+        console.log(catalan+"\n")
+    }
+    return arr.filter(item => item >= MIN && item <= MAX);
+}
+
+function getFactorial(digit) {
+    if (digit == 0 || digit == 1) {
+        return 1;
+    } else {
+        return digit * getFactorial(digit - 1);
+    }
+}
+
+console.log(getFactorial(3*2)/(getFactorial(3+1)*getFactorial(3)))
 submitBtn.addEventListener('click', (e) => {
     e.preventDefault();
     handleClickGenerateList();
