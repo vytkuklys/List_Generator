@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600&display=swap');
+
 *,
 *:after,
 *:before {
@@ -6,6 +8,16 @@
     margin: 0;
 }
 
+body{
+    font-family: 'Montserrat', sans-serif;
+    width: 100%;
+    height: 100%;
+}
+
+button, input{
+    font-family: 'Montserrat', sans-serif;
+
+}
 .custom-select-wrapper {
     position: relative;
     user-select: none;
@@ -143,4 +155,103 @@ input[type="checkbox"] {
 
 .checkbox-wrapper {
     display: flex;
+}
+
+
+header{
+    height: 3.5rem;
+    width: 100%;
+    margin-bottom: 2.5%;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #9c27b0;
+    padding: 0 7.5%;
+    font-size: 17px;
+}
+
+.c-nav, .c-nav__items, header{
+    display: flex;
+}
+
+.c-nav{
+    width: fit-content;
+    width: 40%;
+    justify-content: flex-end;
+}
+
+.c-nav__items{
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+}
+
+.c-nav__item{
+    padding: 0 1.25rem 0;
+    cursor: pointer;
+    color: #ffffff;
+    height: 3.5rem;
+    line-height: 3.5rem;
+    white-space: nowrap;
+    position: relative;
+    text-align: center;
+}
+
+.c-nav__item::after{
+    content: '';
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 2px solid #ffffffb3;
+    display: none;
+}
+
+.c-nav__item:hover::after{
+    display: block;
+}
+
+.c-search{
+    width: 10.5rem;
+    border-radius: 1rem;
+    align-self: center;
+    margin-left: 2.5%;
+}
+
+.c-search__input{
+    width: 100%;
+    border-radius: 1rem;
+    padding: .45rem .9rem .45rem 1.2rem;
+    border: none;
+}
+
+.c-logo{
+    font-weight: 600;
+    color: #ffffff;
+    font-size: 18px;
+}
+
+.l-padding{
+    padding: 0 .675rem 0 .675rem;
+}
+
+.h-border-bottom{
+    border-bottom: 4px solid #ffffffb3;
+}
+
+.h-border-bottom:hover::after{
+    display: none;
+}
+
+.c-generate-btn{
+    padding: 0 1rem;
+    line-height: 3.5rem;
+    height: 3.5rem;
+    border-radius: .5rem;
+    background-color: #3BB027;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 18px;
+    color: #ffffff;
 }

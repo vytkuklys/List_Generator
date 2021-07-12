@@ -2,12 +2,27 @@
 <html>
 
 <head>
+  <meta charset="utf-8" />
+  <meta name="description" content="Sequence Generator" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="reset.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+  <header>
+    <p class="c-logo">Sequence Generator</p>
+    <nav class="c-nav">
+      <ul class="c-nav__items">
+        <li class="c-nav__item h-border-bottom">Home</li>
+        <li class="c-nav__item">About</li>
+        <li class="c-nav__item l-padding">Contact Us</li>
+      </ul>
+      <div class="c-search">
+        <input class="c-search__input" type="text" placeholder="Research a number">
+      </div>
+    </nav>
+  </header>
   <!--surround the select box with a "custom-select" DIV element. Remember to set the width:-->
   <div class="custom-select-wrapper">
     <div class="custom-select">
@@ -68,11 +83,13 @@
   </div>
   <div>
     <label for="min">Range from </label>
-    <input type="text" name="min" id="min" class="digit-range" onkeyup="this.value=this.value.replace(/[^\d]+/,'')" placeholder="Min" required>
+    <input type="text" name="min" id="min" class="digit-range" onkeyup="this.value=this.value.replace(/[^\d]+/,'')"
+      placeholder="Min" required>
     <label for="min">to </label>
-    <input type="text" name="max" id="max" class="digit-range" onkeyup="this.value=this.value.replace(/[^\d]+/,'')" placeholder="Max" required>
+    <input type="text" name="max" id="max" class="digit-range" onkeyup="this.value=this.value.replace(/[^\d]+/,'')"
+      placeholder="Max" required>
   </div>
-  <button class="submit">Generate List</button>
+  <button class="submit c-generate-btn">Generate List</button>
   <div class="sequence-output"></div>
   <script src="main.js"></script>
 </body>
