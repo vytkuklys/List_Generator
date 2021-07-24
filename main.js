@@ -2,9 +2,28 @@ const submitBtn = document.querySelector(".submit");
 const selectToggler = document.querySelector('.c-dropdown');
 const selectOptions = document.querySelectorAll(".c-dropdown__option");
 const checkDigits = document.querySelectorAll(".js-digits__check");
+const maxValueInput = document.getElementById("max");
 
 const toggleSelectMenu = () => {
     document.querySelector('.c-dropdown__select').classList.toggle('open');
+}
+
+const removeAlert = () => {
+    const alert = document.querySelectorAll(".h-alert");
+    alert.forEach(alert =>{
+        alert.classList.remove('h-alert');
+    });
+}
+
+const displayAlertInvalidRange = () => {
+    const alert = document.querySelector(".c-form__input-wrapper");
+    alert.classList.add("h-alert");
+}
+
+const displayAlertSelectFilters = () => {
+    const alert = document.querySelector(".c-digits__wrapper");
+    console.log(alert);
+    alert.classList.add("h-alert");
 }
 
 const selectItem = e => {
@@ -31,7 +50,6 @@ const handleClickGenerateList = () => {
     const digits = getCheckedDigits();
     const range = getRangeOfDigits();
     if (isFormFilledCorrectly(sequence, digits, range)) {
-        console.log(isFormFilledCorrectly(sequence, digits, range))
         var t0 = performance.now()
         handleList(sequence, digits, range);
         var t1 = performance.now()
@@ -60,27 +78,29 @@ const isFormFilledCorrectly = (sequence, digits, range) => {
     if (sequence === "SelectaSequence") {
         displayAlertUnselectedSequence();
         return false;
-    } else if (isRangeNotAcceptable(range)) {
+    } else if (isRangeAcceptable(range)) {
         displayAlertInvalidRange();
         return false;
     } else if (isArrayEmpty(digits) && isRangeEmpty(range)) {
-        displayAlert
+        displayAlertSelectFilters();
         return false;
     }
+    console.log(isArrayEmpty(digits) && isRangeEmpty(range))
+    console.log(isArrayEmpty(digits))
+    console.log(isRangeEmpty(digits))
     return true;
 }
 
 const displayAlertUnselectedSequence = () =>{
     const select = document.querySelector(".c-dropdown__select-trigger");
     select.classList.add("h-alert");
-    console.log(selectToggler);
 }
 
 const isArrayEmpty = (digits) => {
     return Array.isArray(digits) && digits.length === 0;
 }
 
-const isRangeNotAcceptable = range => {
+const isRangeAcceptable = range => {
     if (isRangeEmpty(range)) {
         return false;
     }
@@ -88,7 +108,8 @@ const isRangeNotAcceptable = range => {
 }
 
 const isRangeEmpty = (range) => {
-    return range.length === 2 && (!range[0] && range[0] !== 0) && (!range[1] && range[1] !== 0);
+    console.log(range.length);
+    return range.length == 0;
 }
 
 function handleList(sequence, digits, range) {
@@ -100,13 +121,9 @@ function handleList(sequence, digits, range) {
     }
     digitsArr.forEach(digit => {
         if (isArrayEmpty(digit)) {
-            console.log(`get${sequence}Items`)
             const arr = window[`get${sequence}Items`](1, range);
-            console.log(arr)
         } else {
-            console.log(`get${sequence}Items`)
             const arr = window[`get${sequence}Items`](digit, range);
-            console.log(arr)
         }
     })
 }
@@ -134,7 +151,6 @@ function getFibonacciItems(digit, range) {
     const arr = [getFirstFibonacciValue(digit)];
     const MAX = getMaxValue(digit, range[1]);
     const MIN = getMinValue(digit, range[0]);
-    console.log(MAX, "-max", MIN, "-min")
     let fib = getSecondFibonnaciValue(digit);
     for (let i = 0; fib <= MAX; i++) {
         arr.push(fib);
@@ -186,7 +202,7 @@ const getSecondFibonnaciValue = (digits) => {
 }
 
 const renderFib = (arr) => {
-    const output = document.querySelector('.sequence-output');
+    const output = document.querySelector('.c-output');
     const size = arr.length;
     for (let i = 0; i < size; i++) {
         output.textContent += `${arr[i]} `;
@@ -261,11 +277,9 @@ function getCatalanItems(digit, range) {
     const MAX = getMaxValue(digit, range[1]);
     const MIN = getMinValue(digit, range[0]);
     let catalan = 0;
-    console.log(MAX, "-max", MIN, "-min")
     for (let i = 0; catalan <= MAX; i++) {
         catalan = getFactorial(i*2)/(getFactorial(i+1)*getFactorial(i));
         arr.push(catalan);
-        console.log(catalan+"\n")
     }
     return arr.filter(item => item >= MIN && item <= MAX);
 }
@@ -280,20 +294,16 @@ function getFactorial(digit) {
 
 const handleCheckDigits = (btn) =>{
     isChecked = btn.parentNode.classList[1];
-    console.log(btn.id === "All" && isChecked !== undefined)
     if(btn.id === "All" && isChecked){
         checkDigits.forEach(check =>{
-            check.parentNode.classList.remove("pushed");
+            check.parentNode.classList.remove("h-pushed");
         })
-        console.log("1")
     }else if(btn.id === "All" && isChecked === undefined){
-        console.log("2")
         checkDigits.forEach(check =>{
-            check.parentNode.classList.add("pushed");
+            check.parentNode.classList.add("h-pushed");
         })
     }else{
-        console.log("3")
-        btn.parentNode.classList.toggle("pushed");
+        btn.parentNode.classList.toggle("h-pushed");
     }
 }
 
@@ -301,7 +311,6 @@ submitBtn.addEventListener('click', (e) => {
     e.preventDefault();
     handleClickGenerateList();
 })
-
 
 for (const option of selectOptions) {
     option.addEventListener('click', (e) => selectItem(e));
@@ -311,6 +320,11 @@ checkDigits.forEach(btn =>{
     btn.addEventListener("click", (event)=>handleCheckDigits(event.target));
 })
 
-selectToggler.addEventListener('click', () => toggleSelectMenu());
+selectToggler.addEventListener('click', () => {
+    toggleSelectMenu();
+    removeAlert();
+});
+
+max.addEventListener('click', removeAlert);
 
 window.addEventListener('click', e => handleWindowClick(e));
