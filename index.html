@@ -11,7 +11,10 @@
 
 <body>
   <header>
-    <p class="c-logo">Sequence Generator</p>
+    <div class="c-logo__wrapper">
+      <div class="c-logo__infinity"></div>
+      <p class="c-logo__text">Sequence Generator</p>
+    </div>
     <nav class="c-nav">
       <ul class="c-nav__items">
         <li class="c-nav__item h-border-bottom">Home</li>
@@ -23,74 +26,83 @@
       </div>
     </nav>
   </header>
-  <!--surround the select box with a "custom-select" DIV element. Remember to set the width:-->
-  <div class="custom-select-wrapper">
-    <div class="custom-select">
-      <div class="custom-select__trigger"><span>--- Select a Sequence ---</span>
-        <div class="arrow"></div>
+  <!--surround the select box with a "c-dropdown__select" DIV element. Remember to set the width:-->
+  <main>
+    <form class="c-form">
+      <div class="c-dropdown__select-wrapper c-dropdown">
+        <div class="c-dropdown__select">
+          <div class="c-dropdown__select-trigger"><span>Select a Sequence</span>
+            <div class="arrow"></div>
+          </div>
+          <div class="c-dropdown__options">
+            <span class="c-dropdown__option" data-value="palindrome">Catalan</span>
+            <span class="c-dropdown__option" data-value="fibonacci">Fibonacci</span>
+            <span class="c-dropdown__option" data-value="perfectSquare">Perfect Square</span>
+            <span class="c-dropdown__option" data-value="prime">Prime</span>
+            <span class="c-dropdown__option" data-value="palindrome">Palindrome</span>
+          </div>
+        </div>
       </div>
-      <div class="custom-options">
-        <span class="custom-option" data-value="palindrome">Catalan</span>
-        <span class="custom-option" data-value="fibonacci">Fibonacci</span>
-        <span class="custom-option" data-value="perfectSquare">Perfect Square</span>
-        <span class="custom-option" data-value="prime">Prime</span>
-        <span class="custom-option" data-value="palindrome">Palindrome</span>
-      </div>
-    </div>
-  </div>
 
-  <div class="checkbox-wrapper">
-    <label for="1" class="checkbox__item">
-      <input type="checkbox" id="1">
-      1
-    </label>
-    <label for="2" class="checkbox__item">
-      <input type="checkbox" id="2">
-      2
-    </label>
-    <label for="3" class="checkbox__item">
-      <input type="checkbox" id="3">
-      3
-    </label>
-    <label for="4" class="checkbox__item">
-      <input type="checkbox" id="4">
-      4
-    </label>
-    <label for="5" class="checkbox__item">
-      <input type="checkbox" id="5">
-      5
-    </label>
-    <label for="6" class="checkbox__item">
-      <input type="checkbox" id="6">
-      6
-    </label>
-    <label for="7" class="checkbox__item">
-      <input type="checkbox" id="7">
-      7
-    </label>
-    <label for="8" class="checkbox__item">
-      <input type="checkbox" id="8">
-      8
-    </label>
-    <label for="9" class="checkbox__item">
-      <input type="checkbox" id="9">
-      9
-    </label>
-    <label for="10" class="checkbox__item">
-      <input type="checkbox" id="10">
-      10
-    </label>
-  </div>
-  <div>
-    <label for="min">Range from </label>
-    <input type="text" name="min" id="min" class="digit-range" onkeyup="this.value=this.value.replace(/[^\d]+/,'')"
-      placeholder="Min" required>
-    <label for="min">to </label>
-    <input type="text" name="max" id="max" class="digit-range" onkeyup="this.value=this.value.replace(/[^\d]+/,'')"
-      placeholder="Max" required>
-  </div>
-  <button class="submit c-generate-btn">Generate List</button>
-  <div class="sequence-output"></div>
+      <div class="c-digits__wrapper">
+        <p>Choose digit count</p>
+        <label for="1" class="c-digits__btn">
+          <input type="checkbox" class="js-digits__check" id="1">
+          1
+        </label>
+        <label for="2" class="c-digits__btn">
+          <input type="checkbox" class="js-digits__check" id="2">
+          2
+        </label>
+        <label for="3" class="c-digits__btn">
+          <input type="checkbox" class="js-digits__check" id="3">
+          3
+        </label>
+        <label for="4" class="c-digits__btn">
+          <input type="checkbox" class="js-digits__check" id="4">
+          4
+        </label>
+        <label for="5" class="c-digits__btn">
+          <input type="checkbox" class="js-digits__check" id="5">
+          5
+        </label>
+        <label for="6" class="c-digits__btn">
+          <input type="checkbox" class="js-digits__check" id="6">
+          6
+        </label>
+        <label for="7" class="c-digits__btn">
+          <input type="checkbox" class="js-digits__check" id="7">
+          7
+        </label>
+        <label for="8" class="c-digits__btn">
+          <input type="checkbox" class="js-digits__check" id="8">
+          8
+        </label>
+        <label for="9" class="c-digits__btn">
+          <input type="checkbox" class="js-digits__check" id="9">
+          9
+        </label>
+        <label for="10" class="c-digits__btn">
+          <input type="checkbox" class="js-digits__check" id="10">
+          10
+        </label>
+        <label for="All" class="c-digits__btn">
+          <input type="checkbox" class="js-digits__check" id="All">
+          All
+        </label>
+      </div>
+      <div class="c-form__input-wrapper">
+        <label for="min" class="c-form__input-label">Display numbers from </label>
+        <input type="text" name="min" id="min" class="digit-range c-form__input-field" onkeyup="this.value=this.value.replace(/[^\d]+/,'')"
+          placeholder="Min" required>
+        <label for="min" class="c-form__input-label">to </label>
+        <input type="text" name="max" id="max" class="digit-range c-form__input-field" onkeyup="this.value=this.value.replace(/[^\d]+/,'')"
+          placeholder="Max" required>
+          <button class="submit c-generate-btn">Generate List</button>
+      </div>
+    </form>
+    <div class="sequence-output"></div>
+  </main>
   <script src="main.js"></script>
 </body>
 

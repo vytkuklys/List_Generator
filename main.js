@@ -1,35 +1,37 @@
 const submitBtn = document.querySelector(".submit");
-const selectToggler = document.querySelector('.custom-select-wrapper');
-const selectOptions = document.querySelectorAll(".custom-option");
+const selectToggler = document.querySelector('.c-dropdown');
+const selectOptions = document.querySelectorAll(".c-dropdown__option");
+const checkDigits = document.querySelectorAll(".js-digits__check");
 
 const toggleSelectMenu = () => {
-    document.querySelector('.custom-select').classList.toggle('open');
+    document.querySelector('.c-dropdown__select').classList.toggle('open');
 }
 
 const selectItem = e => {
     item = e.target;
     if (!item.classList.contains('selected')) {
-        if (item.parentNode.querySelector('.custom-option.selected')) {
-            item.parentNode.querySelector('.custom-option.selected').classList.remove('selected');
+        if (item.parentNode.querySelector('.c-dropdown__option.selected')) {
+            item.parentNode.querySelector('.c-dropdown__option.selected').classList.remove('selected');
         }
         item.classList.add('selected');
-        item.closest('.custom-select').querySelector('.custom-select__trigger span').textContent = item
+        item.closest('.c-dropdown__select').querySelector('.c-dropdown__select-trigger span').textContent = item
             .textContent;
     }
 }
 
 const handleWindowClick = e => {
-    const select = document.querySelector('.custom-select')
+    const select = document.querySelector('.c-dropdown__select')
     if (!select.contains(e.target)) {
         select.classList.remove('open');
     }
 }
 
 const handleClickGenerateList = () => {
-    const sequence = document.querySelector('.custom-select__trigger').textContent.trim().replace(/ /g, "");
+    const sequence = document.querySelector('.c-dropdown__select-trigger').textContent.trim().replace(/ /g, "");
     const digits = getCheckedDigits();
     const range = getRangeOfDigits();
     if (isFormFilledCorrectly(sequence, digits, range)) {
+        console.log(isFormFilledCorrectly(sequence, digits, range))
         var t0 = performance.now()
         handleList(sequence, digits, range);
         var t1 = performance.now()
@@ -55,14 +57,23 @@ const getRangeOfDigits = () => {
 }
 
 const isFormFilledCorrectly = (sequence, digits, range) => {
-    if (sequence === "---SelectaSequence---") {
+    if (sequence === "SelectaSequence") {
+        displayAlertUnselectedSequence();
         return false;
     } else if (isRangeNotAcceptable(range)) {
+        displayAlertInvalidRange();
         return false;
     } else if (isArrayEmpty(digits) && isRangeEmpty(range)) {
+        displayAlert
         return false;
     }
     return true;
+}
+
+const displayAlertUnselectedSequence = () =>{
+    const select = document.querySelector(".c-dropdown__select-trigger");
+    select.classList.add("h-alert");
+    console.log(selectToggler);
 }
 
 const isArrayEmpty = (digits) => {
@@ -267,7 +278,25 @@ function getFactorial(digit) {
     }
 }
 
-console.log(getFactorial(3*2)/(getFactorial(3+1)*getFactorial(3)))
+const handleCheckDigits = (btn) =>{
+    isChecked = btn.parentNode.classList[1];
+    console.log(btn.id === "All" && isChecked !== undefined)
+    if(btn.id === "All" && isChecked){
+        checkDigits.forEach(check =>{
+            check.parentNode.classList.remove("pushed");
+        })
+        console.log("1")
+    }else if(btn.id === "All" && isChecked === undefined){
+        console.log("2")
+        checkDigits.forEach(check =>{
+            check.parentNode.classList.add("pushed");
+        })
+    }else{
+        console.log("3")
+        btn.parentNode.classList.toggle("pushed");
+    }
+}
+
 submitBtn.addEventListener('click', (e) => {
     e.preventDefault();
     handleClickGenerateList();
@@ -277,6 +306,10 @@ submitBtn.addEventListener('click', (e) => {
 for (const option of selectOptions) {
     option.addEventListener('click', (e) => selectItem(e));
 }
+
+checkDigits.forEach(btn =>{
+    btn.addEventListener("click", (event)=>handleCheckDigits(event.target));
+})
 
 selectToggler.addEventListener('click', () => toggleSelectMenu());
 
