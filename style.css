@@ -13,10 +13,12 @@ body {
     width: 100%;
     height: 100%;
 }
-main{
+
+main {
     margin: 0 auto;
     padding: 0 7.5%;
 }
+
 button,
 input {
     font-family: 'Montserrat', sans-serif;
@@ -55,6 +57,20 @@ input {
     border-radius: .25rem;
 }
 
+.c-dropdown__select-trigger::after {
+    content: 'Please Select a Sequence';
+    right: .5rem;
+    bottom: -3.5rem;
+    display: none;
+}
+
+.c-dropdown__select-trigger::before{
+    content: '';
+    right: 1.9rem;
+    bottom: -1.1rem;
+    display: none;
+}
+
 .c-dropdown__options {
     position: absolute;
     display: block;
@@ -62,10 +78,9 @@ input {
     left: 0;
     right: 0;
     border: 1px solid #9c27b0;
-
     border-top: 0;
     background: #fff;
-    transition: all 0.5s;
+    /* transition: all .25s ease-in, color .01s ease-in; */
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -112,19 +127,19 @@ input {
     content: "";
     position: absolute;
     bottom: 0px;
-    width: 0.15rem;
+    width: 0.25rem;
     height: 100%;
     transition: all 0.5s;
 }
 
 .arrow::before {
-    left: -5px;
+    left: -4.5px;
     transform: rotate(45deg);
     background-color: #3cb027;
 }
 
 .arrow::after {
-    left: 5px;
+    left: 4.5px;
     transform: rotate(-45deg);
     background-color: #3cb027;
 }
@@ -132,9 +147,11 @@ input {
 .open .arrow::before {
     left: -5px;
     transform: rotate(-45deg);
+    width: 0.15rem;
 }
 
 .open .arrow::after {
+    width: 0.15rem;
     left: 5px;
     transform: rotate(45deg);
 }
@@ -157,9 +174,7 @@ input[type="checkbox"] {
     color: #222222;
     font-weight: bold;
     border: 1px solid #9c27b0;
-    /* background-image: linear-gradient(-180deg, #B4A024 0%, #24B4A0 100%); */
     transition: transform 75ms linear, border 50ms linear, color 50ms linear, background-color 50ms linear;
-    /* outline: none; */
 }
 
 .c-digits__btn span {
@@ -169,11 +184,8 @@ input[type="checkbox"] {
 
 .c-digits__btn:hover {
     transform: scale(.985);
-    /* border: 2.5px solid #9b27b0d5; */ 
-    /* color: #3BB027; */
     border: 1px solid #9c27b0;
     background-color: #9b27b0ad;
-    /* border-color: #3BB027; */
     color: #FFFFFF;
 
 }
@@ -183,25 +195,38 @@ input[type="checkbox"] {
     border: 3px solid #9c27b0;
 }
 
-.pushed {
-    /* transform: scale(.975); */
+.h-pushed {
     border: 1px solid #9c27b0;
     background-color: #9c27b0;
-    /* border-color: #3BB027; */
     color: #FFFFFF;
 }
 
-.pushed:hover{
+.h-pushed:hover {
     background-color: #9c27b0;
 }
+
 .c-digits__wrapper {
     display: flex;
     padding: 2.5% 0;
     align-items: center;
     font-size: 1.1rem;
     font-weight: bold;
+    position: relative;
 }
 
+.c-digits__wrapper::after{
+    content: 'Please Select Digit count or min/max';
+    bottom: -3rem;
+    left: 550px;
+    display: none;
+}
+
+.c-digits__wrapper::before{
+    content: '';
+    left: 545px;
+    bottom: -2rem;
+    display: none;
+}
 
 header {
     height: 3.5rem;
@@ -341,33 +366,128 @@ header {
     position: absolute;
     right: 0;
 }
+ 
+.c-generate-btn:hover{
+    background-color: #1fb903;
+}
 
-.c-form{
+.c-generate-btn:active{
+    transform: scale(.995);
+
+}
+
+.c-form {
     text-align: right;
 }
 
-.c-form__input-wrapper{
+.c-form__input-wrapper {
     width: 100%;
     text-align: left;
     font-size: 17.6px;
     font-weight: bold;
     height: 52px;
     position: relative;
-
 }
 
-.c-form__input-field{
+.c-form__input-field {
     height: 100%;
     width: 7.5rem;
     border: 1px solid #9c27b0;
     border-radius: .25rem;
     text-align: center;
     font-size: 1.1rem;
+    font-weight: bold;
     margin: 0 1%;
+    outline-color: #3BB027;
 }
 
-.h-alert{
-    /* border: 1px solid rgb(255, 0, 0);
-    border-radius: .25rem; */
+.c-form__input-wrapper::after{
+    content: 'Please Enter A Valid Max Value';
+    left: 550px;
+    top: .25rem;
+    display: none;
+}
+
+.c-form__input-wrapper::before{
+    content: '';
+    top: 1.25rem;
+    left: 545px;
+    display: none;
+}
+
+.c-output{
+    font-size: 1.45rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.c-output span{
+    background-color: #F4FBF4;
+    padding: .5rem 0;
+    text-indent: 1rem;
+    color: #222222;
+}
+
+.c-output span:nth-child(2n){
+    background-color: #CFEEC9;
+}
+
+.c-list__title{
+    padding: 3rem 0 2rem;
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+.h-alert {
     border-color: red;
+}
+
+.h-alert::before{
+    background-color: red;
+    padding: .3rem;
+    position: absolute;
+    transform: rotate(45deg);
+    animation: alert2 1.25s 5;
+    cursor: auto;
+    display: block;
+}
+
+.h-alert::after{
+    position: absolute;
+    color: red;
+    border-radius: .25rem;
+    border: 4px solid red;
+    font-size: .8rem;
+    text-transform: uppercase;
+    padding: 0 1rem;
+    line-height: 35px;
+    z-index: 1;
+    background-color: #ffffff;
+    animation: alert1 1.25s 5;
+    cursor: auto;
+    display: block;
+}
+
+@keyframes alert1 {
+    from {
+        color: blue;
+        border-color: blue;
+    }
+
+    to {
+        color: red;
+        border-color: red;
+    }
+}
+
+
+@keyframes alert2 {
+    from {
+        background-color: blue;
+    }
+
+    to {
+        background-color: red;
+    }
 }
