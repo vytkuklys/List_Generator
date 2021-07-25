@@ -1,49 +1,8 @@
 const submitBtn = document.querySelector(".submit");
 const selectToggler = document.querySelector('.c-dropdown');
 const selectOptions = document.querySelectorAll(".c-dropdown__option");
-const checkDigits = document.querySelectorAll(".js-digits__check");
+const checkboxToggler = document.querySelectorAll(".js-digits__check");
 const maxValueInput = document.getElementById("max");
-
-const toggleSelectMenu = () => {
-    document.querySelector('.c-dropdown__select').classList.toggle('open');
-}
-
-const removeAlert = () => {
-    const alert = document.querySelectorAll(".h-alert");
-    alert.forEach(alert =>{
-        alert.classList.remove('h-alert');
-    });
-}
-
-const displayAlertInvalidRange = () => {
-    const alert = document.querySelector(".c-form__input-wrapper");
-    alert.classList.add("h-alert");
-}
-
-const displayAlertSelectFilters = () => {
-    const alert = document.querySelector(".c-digits__wrapper");
-    console.log(alert);
-    alert.classList.add("h-alert");
-}
-
-const selectItem = e => {
-    item = e.target;
-    if (!item.classList.contains('selected')) {
-        if (item.parentNode.querySelector('.c-dropdown__option.selected')) {
-            item.parentNode.querySelector('.c-dropdown__option.selected').classList.remove('selected');
-        }
-        item.classList.add('selected');
-        item.closest('.c-dropdown__select').querySelector('.c-dropdown__select-trigger span').textContent = item
-            .textContent;
-    }
-}
-
-const handleWindowClick = e => {
-    const select = document.querySelector('.c-dropdown__select')
-    if (!select.contains(e.target)) {
-        select.classList.remove('open');
-    }
-}
 
 const handleClickGenerateList = () => {
     const sequence = document.querySelector('.c-dropdown__select-trigger').textContent.trim().replace(/ /g, "");
@@ -56,9 +15,14 @@ const handleClickGenerateList = () => {
         console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
     }
 }
+
 const getCheckedDigits = () => {
     const checkboxItems = document.querySelectorAll('input[type="checkbox"]');
+    const all = document.getElementById('All');
     const digits = [];
+
+    if(all.checked)
+        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     checkboxItems.forEach(item => {
         item.checked ? digits.push(parseInt(item.id)) : ""
     })
@@ -85,9 +49,6 @@ const isFormFilledCorrectly = (sequence, digits, range) => {
         displayAlertSelectFilters();
         return false;
     }
-    console.log(isArrayEmpty(digits) && isRangeEmpty(range))
-    console.log(isArrayEmpty(digits))
-    console.log(isRangeEmpty(digits))
     return true;
 }
 
@@ -96,24 +57,20 @@ const displayAlertUnselectedSequence = () =>{
     select.classList.add("h-alert");
 }
 
-const isArrayEmpty = (digits) => {
-    return Array.isArray(digits) && digits.length === 0;
+const displayAlertInvalidRange = () => {
+    const alert = document.querySelector(".c-form__input-wrapper");
+    alert.classList.add("h-alert");
 }
 
-const isRangeAcceptable = range => {
-    if (isRangeEmpty(range)) {
-        return false;
-    }
-    return range[0] > range[1];
-}
-
-const isRangeEmpty = (range) => {
-    console.log(range.length);
-    return range.length == 0;
+const displayAlertSelectFilters = () => {
+    const alert = document.querySelector(".c-digits__wrapper");
+    alert.classList.add("h-alert");
 }
 
 function handleList(sequence, digits, range) {
     const digitsArr = [];
+    let result = [];
+
     if (isArrayEmpty(digits)) {
         digitsArr.push(...getRangeDigits(range));
     } else {
@@ -121,30 +78,28 @@ function handleList(sequence, digits, range) {
     }
     digitsArr.forEach(digit => {
         if (isArrayEmpty(digit)) {
-            const arr = window[`get${sequence}Items`](1, range);
+            result.push(...window[`get${sequence}Items`](1, range));
         } else {
-            const arr = window[`get${sequence}Items`](digit, range);
+            result.push(...window[`get${sequence}Items`](digit, range));
         }
     })
+    deleteCurrentList();
+    window[`render${sequence}List`](result);
+    renderListInfo(sequence);
 }
 
-const getRangeDigits = (range) => {
-    const digits = [];
-    let minDigits = getDigitCount(range[0]);
-    let maxDigits = getDigitCount(range[1]);
-    while (minDigits <= maxDigits) {
-        digits.push(minDigits++);
+const deleteCurrentList = () =>{
+    const list = document.querySelector('.c-output');
+    if(list)
+    {
+        list.innerHTML = "";
+        list.remove();
     }
-    return digits;
 }
 
-const getDigitCount = (digit) => {
-    let count = 0;
-    while (digit > 0) {
-        count++;
-        digit = Math.floor(digit / 10);
-    }
-    return count;
+const renderListInfo = (sequence) =>{
+    const title = document.querySelector('.c-list__name');
+    title.textContent = `${sequence}`;
 }
 
 function getFibonacciItems(digit, range) {
@@ -152,21 +107,13 @@ function getFibonacciItems(digit, range) {
     const MAX = getMaxValue(digit, range[1]);
     const MIN = getMinValue(digit, range[0]);
     let fib = getSecondFibonnaciValue(digit);
+
     for (let i = 0; fib <= MAX; i++) {
         arr.push(fib);
         fib = arr[i] + arr[i + 1];
     }
+    if(arr[0] === 1) arr.unshift(0);
     return arr.filter(item => item >= MIN && item <= MAX);
-}
-
-const getMaxValue = (digits, max = 0) => {
-    const limit = Math.pow(10, digits);
-    return max === 0 ? limit - 1 : limit > max ? max : limit - 1;
-}
-
-const getMinValue = (digits, min = 0) => {
-    const start = Math.pow(10, digits - 1);
-    return min === 0 ? min : start < min ? min : start;
 }
 
 const getFirstFibonacciValue = (digits) => {
@@ -201,12 +148,76 @@ const getSecondFibonnaciValue = (digits) => {
     return values[digits];
 }
 
-const renderFib = (arr) => {
-    const output = document.querySelector('.c-output');
-    const size = arr.length;
-    for (let i = 0; i < size; i++) {
-        output.textContent += `${arr[i]} `;
+function renderFibonacciList(arr){
+    const output = document.createElement('div');
+    const main = document.querySelector('main');
+    const SIZE = arr.length;
+    output.classList.add('c-output');
+    for (let i = 0; i < SIZE; i++) {
+        const span = document.createElement('span');
+        span.textContent = `${arr[i]}`;
+        output.appendChild(span);
     }
+    main.appendChild(output);
+}
+
+const toggleSelectMenu = () => {
+    document.querySelector('.c-dropdown__select').classList.toggle('open');
+}
+
+const removeAlert = () => {
+    const alert = document.querySelectorAll(".h-alert");
+    alert.forEach(alert =>{
+        alert.classList.remove('h-alert');
+    });
+}
+
+const selectItem = e => {
+    item = e.target;
+    if (!item.classList.contains('selected')) {
+        if (item.parentNode.querySelector('.c-dropdown__option.selected')) {
+            item.parentNode.querySelector('.c-dropdown__option.selected').classList.remove('selected');
+        }
+        item.classList.add('selected');
+        item.closest('.c-dropdown__select').querySelector('.c-dropdown__select-trigger span').textContent = item
+            .textContent;
+    }
+}
+
+const handleWindowClick = e => {
+    const select = document.querySelector('.c-dropdown__select')
+    if (!select.contains(e.target)) {
+        select.classList.remove('open');
+    }
+}
+
+const getRangeDigits = (range) => {
+    const digits = [];
+    let minDigits = getDigitCount(range[0]);
+    let maxDigits = getDigitCount(range[1]);
+    while (minDigits <= maxDigits) {
+        digits.push(minDigits++);
+    }
+    return digits;
+}
+
+const getDigitCount = (digit) => {
+    let count = 0;
+    while (digit > 0) {
+        count++;
+        digit = Math.floor(digit / 10);
+    }
+    return count;
+}
+
+const getMaxValue = (digits, max = 0) => {
+    const limit = Math.pow(10, digits);
+    return max === 0 ? limit - 1 : limit > max ? max : limit - 1;
+}
+
+const getMinValue = (digits, min = 0) => {
+    const start = Math.pow(10, digits - 1);
+    return min === 0 ? min : start < min ? min : start;
 }
 
 function getPerfectSquareItems(digit, range) {
@@ -246,7 +257,6 @@ function getPrimeItems(digit, range) {
             result.push(i);
         }
     }
-
     return result;
 };
 
@@ -292,19 +302,36 @@ function getFactorial(digit) {
     }
 }
 
-const handleCheckDigits = (btn) =>{
+const handleCheckboxToggle = (btn) =>{
     isChecked = btn.parentNode.classList[1];
     if(btn.id === "All" && isChecked){
-        checkDigits.forEach(check =>{
+        checkboxToggler.forEach(check =>{
             check.parentNode.classList.remove("h-pushed");
+            check.checked = false;
         })
     }else if(btn.id === "All" && isChecked === undefined){
-        checkDigits.forEach(check =>{
+        checkboxToggler.forEach(check =>{
             check.parentNode.classList.add("h-pushed");
+            check.checked = true;
         })
     }else{
         btn.parentNode.classList.toggle("h-pushed");
     }
+}
+
+const isArrayEmpty = (digits) => {
+    return Array.isArray(digits) && digits.length === 0;
+}
+
+const isRangeAcceptable = range => {
+    if (isRangeEmpty(range)) {
+        return false;
+    }
+    return range[0] > range[1];
+}
+
+const isRangeEmpty = (range) => {
+    return range.length == 0;
 }
 
 submitBtn.addEventListener('click', (e) => {
@@ -316,8 +343,8 @@ for (const option of selectOptions) {
     option.addEventListener('click', (e) => selectItem(e));
 }
 
-checkDigits.forEach(btn =>{
-    btn.addEventListener("click", (event)=>handleCheckDigits(event.target));
+checkboxToggler.forEach(btn =>{
+    btn.addEventListener("click", (event)=>handleCheckboxToggle(event.target));
 })
 
 selectToggler.addEventListener('click', () => {
