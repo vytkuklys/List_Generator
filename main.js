@@ -76,6 +76,7 @@ function handleList(sequence, digits, range) {
     } else {
         digitsArr.push(...digits);
     }
+    console.log(sequence)
     digitsArr.forEach(digit => {
         if (isArrayEmpty(digit)) {
             result.push(...window[`get${sequence}Items`](1, range));
@@ -84,8 +85,9 @@ function handleList(sequence, digits, range) {
         }
     })
     deleteCurrentList();
-    window[`render${sequence}List`](result);
+    renderList(result);
     renderListInfo(sequence);
+    console.log(result);
 }
 
 const deleteCurrentList = () =>{
@@ -148,18 +150,102 @@ const getSecondFibonnaciValue = (digits) => {
     return values[digits];
 }
 
-function renderFibonacciList(arr){
+const renderList = (result) =>{
     const output = document.createElement('div');
     const main = document.querySelector('main');
-    const SIZE = arr.length;
+    const SIZE = result.length;
     output.classList.add('c-output');
     for (let i = 0; i < SIZE; i++) {
         const span = document.createElement('span');
-        span.textContent = `${arr[i]}`;
+        span.textContent = `${result[i]}`;
         output.appendChild(span);
     }
     main.appendChild(output);
 }
+
+function getCatalanItems(digit, range) {
+    const arr = [];
+    console.log(digit, range);
+    const MAX = getMaxValue(digit, range[1]);
+    const MIN = getMinValue(digit, range[0]);
+    let catalan = 0;
+    for (let i = 0; catalan <= MAX; i++) {
+        catalan = getFactorial(i*2)/(getFactorial(i+1)*getFactorial(i));
+        arr.push(catalan);
+    }
+    return arr.filter(item => item >= MIN && item <= MAX);
+}
+
+const getFactorial = (digit)=> {
+    if (digit == 0 || digit == 1) {
+        return 1;
+    } else {
+        return digit * getFactorial(digit - 1);
+    }
+}
+
+function getPalindromeItems(digit, range) {
+    let min = getMinValue(digit, range[0]);
+    const MAX = getMaxValue(digit, range[1]);
+    const result = [];
+    // if (min < 11) {
+    //     min = 11;
+    // }
+    console.log(min, MAX)
+    for (let i = min; i <= MAX; i++) {
+
+        if (parseFloat(
+                i
+                .toString()
+                .split('')
+                .reverse()
+                .join('')
+            ) === i) {
+            result.push(i);
+        }
+    }
+    return result;
+}
+
+function getPerfectSquareItems(digit, range) {
+    const MIN = getMinValue(digit, range[0]);
+    const MAX = getMaxValue(digit, range[1]);
+    const arr = [];
+    for (let i = MIN; i <= MAX; i++) {
+        if (i >= 0) {
+            let root = Math.sqrt(i);
+            if (Number.isInteger(root)) {
+                arr.push(i)
+            }
+        }
+    }
+    return arr;
+}
+
+function getPrimeItems(digit, range) {
+    console.log(range[0], range[1])
+    const MIN = getMinValue(digit, range[0]);
+    const MAX = getMaxValue(digit, range[1]);
+    const arr = [];
+    const limit = Math.sqrt(MAX);
+    const result = [];
+    for (let i = 0; i < MAX; i++) {
+        arr.push(true);
+    }
+    for (let i = 2; i <= limit; i++) {
+        if (arr[i]) {
+            for (var j = i * i; j < MAX; j += i) {
+                arr[j] = false;
+            }
+        }
+    }
+    for (let i = 2; i < MAX; i++) {
+        if (arr[i] && i > MIN && i < MAX) {
+            result.push(i);
+        }
+    }
+    return result;
+};
 
 const toggleSelectMenu = () => {
     document.querySelector('.c-dropdown__select').classList.toggle('open');
@@ -217,89 +303,7 @@ const getMaxValue = (digits, max = 0) => {
 
 const getMinValue = (digits, min = 0) => {
     const start = Math.pow(10, digits - 1);
-    return min === 0 ? min : start < min ? min : start;
-}
-
-function getPerfectSquareItems(digit, range) {
-    const MIN = getMinValue(digit, range[0]);
-    const MAX = getMaxValue(digit, range[1]);
-    const arr = [];
-    for (let i = MIN; i <= MAX; i++) {
-        if (i >= 0) {
-            let root = Math.sqrt(i);
-            if (Number.isInteger(root)) {
-                arr.push(i)
-            }
-        }
-    }
-    return arr;
-}
-
-function getPrimeItems(digit, range) {
-    const MIN = getMinValue(digit, range[0]);
-    const MAX = getMaxValue(digit, range[1]);
-
-    const arr = [],
-        limit = Math.sqrt(MAX),
-        result = [];
-    for (let i = MIN; i < MAX; i++) {
-        arr.push(true);
-    }
-    for (let i = 2; i <= limit; i++) {
-        if (arr[i]) {
-            for (var j = i * i; j < MAX; j += i) {
-                arr[j] = false;
-            }
-        }
-    }
-    for (let i = 2; i < MAX; i++) {
-        if (arr[i]) {
-            result.push(i);
-        }
-    }
-    return result;
-};
-
-function getPalindromeItems(digit, range) {
-    let min = getMinValue(digit, range[0]);
-    const MAX = getMaxValue(digit, range[1]);
-    const result = [];
-    if (min < 11) {
-        min = 11;
-    }
-    for (let i = min; i <= MAX; i++) {
-
-        if (parseFloat(
-                i
-                .toString()
-                .split('')
-                .reverse()
-                .join('')
-            ) === i) {
-            result.push(i);
-        }
-    }
-    return result;
-}
-
-function getCatalanItems(digit, range) {
-    const arr = [];
-    const MAX = getMaxValue(digit, range[1]);
-    const MIN = getMinValue(digit, range[0]);
-    let catalan = 0;
-    for (let i = 0; catalan <= MAX; i++) {
-        catalan = getFactorial(i*2)/(getFactorial(i+1)*getFactorial(i));
-        arr.push(catalan);
-    }
-    return arr.filter(item => item >= MIN && item <= MAX);
-}
-
-function getFactorial(digit) {
-    if (digit == 0 || digit == 1) {
-        return 1;
-    } else {
-        return digit * getFactorial(digit - 1);
-    }
+    return min === 0 && digits == 1 ? min : start < min ? min : start;
 }
 
 const handleCheckboxToggle = (btn) =>{
