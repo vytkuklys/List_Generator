@@ -8,6 +8,9 @@ const handleClickGenerateList = () => {
     const sequence = document.querySelector('.c-dropdown__select-trigger').textContent.trim().replace(/ /g, "");
     const digits = getCheckedDigits();
     const range = getRangeOfDigits();
+    const infoMsg = document.querySelector('.c-list__info');
+
+    infoMsg.classList.add('h-hide');
     if (isFormFilledCorrectly(sequence, digits, range)) {
         var t0 = performance.now()
         handleList(sequence, digits, range);
@@ -100,8 +103,9 @@ const deleteCurrentList = () =>{
 }
 
 const renderListInfo = (sequence) =>{
-    const title = document.querySelector('.c-list__name');
-    title.textContent = `${sequence}`;
+    const title = document.querySelector('.c-list__title');
+    sequence = sequence === 'PerfectSquare' ? 'Perfect Square' : sequence;
+    title.textContent = `List of ${sequence} Numbers`;
 }
 
 function getFibonacciItems(digit, range) {
@@ -171,7 +175,7 @@ function getCatalanItems(digit, range) {
     let catalan = 0;
     for (let i = 0; catalan <= MAX; i++) {
         catalan = getFactorial(i*2)/(getFactorial(i+1)*getFactorial(i));
-        arr.push(catalan);
+        arr.push(Math.round(catalan));
     }
     return arr.filter(item => item >= MIN && item <= MAX);
 }
@@ -307,7 +311,15 @@ const getMinValue = (digits, min = 0) => {
 }
 
 const handleCheckboxToggle = (btn) =>{
-    isChecked = btn.parentNode.classList[1];
+    const isChecked = btn.parentNode.classList[1];
+    const all_btn = document.getElementById('All');
+
+    if(btn.id !== "All" && all_btn.parentNode.classList[1]){
+        all_btn.parentNode.classList.remove("h-pushed");
+        all_btn.checked = false;
+        console.log('what?');
+        console.log(all_btn);
+    }
     if(btn.id === "All" && isChecked){
         checkboxToggler.forEach(check =>{
             check.parentNode.classList.remove("h-pushed");
@@ -359,3 +371,20 @@ selectToggler.addEventListener('click', () => {
 max.addEventListener('click', removeAlert);
 
 window.addEventListener('click', e => handleWindowClick(e));
+
+window.addEventListener('scroll', () => {
+    //return to prevent multiple function calls while showLoadingSpinner() function is still on stack
+    //return when in 'no items found' view
+    //return if there is nothing more to load
+    // if (filename === "favourites.html" || loading || document.querySelector('.emptyState__icon')) return;
+    const {
+        scrollTop,
+        scrollHeight,
+        clientHeight
+    } =
+    document.documentElement;
+    if (scrollTop + clientHeight >= scrollHeight - 250) {
+        // showLoadingSpinner();
+        console.log('hi');
+    }
+});
