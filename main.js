@@ -4,18 +4,31 @@ const selectOptions = document.querySelectorAll(".c-dropdown__option");
 const checkboxToggler = document.querySelectorAll(".js-digits__check");
 const maxValueInput = document.getElementById("max");
 
+const lazyLoad = target => {
+    const io = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+
+            if (entry.isIntersecting) {
+                // let url = entry.target.getAttribute('data-src');
+                // entry.target.style.backgroundImage = `url("${url}")`;
+                console.log('hey');
+                observer.disconnect();
+            }
+        })
+    });
+
+    io.observe(target);
+}
+
 const handleClickGenerateList = () => {
     const sequence = document.querySelector('.c-dropdown__select-trigger').textContent.trim().replace(/ /g, "");
     const digits = getCheckedDigits();
     const range = getRangeOfDigits();
     const infoMsg = document.querySelector('.c-list__info');
-
-    infoMsg.classList.add('h-hide');
     if (isFormFilledCorrectly(sequence, digits, range)) {
-        var t0 = performance.now()
+        setPrintedValue(0);
         handleList(sequence, digits, range);
-        var t1 = performance.now()
-        console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
+        infoMsg.classList.add('h-hide');
     }
 }
 
@@ -79,12 +92,11 @@ function handleList(sequence, digits, range) {
     } else {
         digitsArr.push(...digits);
     }
-    console.log(sequence)
-    digitsArr.forEach(digit => {
-        if (isArrayEmpty(digit)) {
+    digitsArr.forEach(digits => {
+        if (isArrayEmpty(digits)) {
             result.push(...window[`get${sequence}Items`](1, range));
         } else {
-            result.push(...window[`get${sequence}Items`](digit, range));
+            result.push(...window[`get${sequence}Items`](digits, range));
         }
     })
     deleteCurrentList();
@@ -100,7 +112,7 @@ const deleteCurrentList = () =>{
         list.innerHTML = "";
         list.remove();
     }
-}
+} 
 
 const renderListInfo = (sequence) =>{
     const title = document.querySelector('.c-list__title');
@@ -164,12 +176,15 @@ const renderList = (result) =>{
         span.textContent = `${result[i]}`;
         output.appendChild(span);
     }
+    console.log(output.lastChild);
+    if (SIZE >= 3000){
+        lazyLoad(output.lastChild);
+    }
     main.appendChild(output);
 }
 
 function getCatalanItems(digit, range) {
     const arr = [];
-    console.log(digit, range);
     const MAX = getMaxValue(digit, range[1]);
     const MIN = getMinValue(digit, range[0]);
     let catalan = 0;
@@ -189,15 +204,14 @@ const getFactorial = (digit)=> {
 }
 
 function getPalindromeItems(digit, range) {
-    let min = getMinValue(digit, range[0]);
+    const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
     const result = [];
-    // if (min < 11) {
-    //     min = 11;
-    // }
-    console.log(min, MAX)
-    for (let i = min; i <= MAX; i++) {
-
+    const PRINTED = getStaticValues('data-printed');
+    const QUOTA = getStaticValues('data-quota');
+    const OPTIMIZE = getOptimalValues(digit);
+    let counter = PRINTED ? PRINTED : 0;
+    for (let i = MIN; i <= MAX && counter < 3000 * QUOTA; i++) {
         if (parseFloat(
                 i
                 .toString()
@@ -205,34 +219,78 @@ function getPalindromeItems(digit, range) {
                 .reverse()
                 .join('')
             ) === i) {
-            result.push(i);
+                result.push(i);
+                counter++;
+                if(counter % OPTIMIZE[2] === 0){
+                    i -= OPTIMIZE[1];
+                }
+                i+= OPTIMIZE[0];
         }
     }
+    setPrintedValue(counter);
     return result;
+}
+
+const getOptimalValues = (digit) =>{
+    switch(digit){
+        case 1:
+        case 2:
+        case 3:
+            return [0, 0, 1001]
+        case 4:
+            return [99, 90, 10];
+        case 5:
+            return [99, 90, 100];
+        case 6:
+            return [999, 990, 10];
+        case 7:
+            return [999, 990, 100];
+        case 8: 
+            return [9999, 9990, 10];
+        case 9: 
+            return [9999, 9990, 100];
+        case 10:
+            return [99999, 99989, 10];
+        default:
+            break;
+    }
 }
 
 function getPerfectSquareItems(digit, range) {
     const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
     const arr = [];
-    for (let i = MIN; i <= MAX; i++) {
+    const PRINTED = getStaticValues('data-printed');
+    const QUOTA = getStaticValues('data-quota');
+    let counter = PRINTED ? PRINTED : 0;
+    for (let i = MIN; i <= MAX && counter < 3000 * QUOTA; i++) {
         if (i >= 0) {
             let root = Math.sqrt(i);
             if (Number.isInteger(root)) {
                 arr.push(i)
+                counter++;
             }
         }
     }
+    setPrintedValue(counter);
     return arr;
 }
 
+const setPrintedValue = (printed) =>{
+    if (Number.isInteger(printed)) {
+        document.querySelector(`[data-printed]`).setAttribute("data-printed", `${printed}`);
+    }
+    console.log(document.querySelector(`[data-printed]`))
+}
+
 function getPrimeItems(digit, range) {
-    console.log(range[0], range[1])
     const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
     const arr = [];
     const limit = Math.sqrt(MAX);
     const result = [];
+    let counter = 0;
+    let i = 0;
     for (let i = 0; i < MAX; i++) {
         arr.push(true);
     }
@@ -243,13 +301,23 @@ function getPrimeItems(digit, range) {
             }
         }
     }
-    for (let i = 2; i < MAX; i++) {
-        if (arr[i] && i > MIN && i < MAX) {
+    for (let i = MIN; i < MAX && counter < 5000; i++) {
+        // if (arr[i] && i > MIN && i < MAX) {
+        if(arr[i]){
             result.push(i);
+            counter++;
         }
     }
     return result;
 };
+
+const getStaticValues = (data) =>{
+    const value = document.querySelector(`[${data}]`).getAttribute(`${data}`);
+    if(Number(value)){
+        return value;
+    }
+    return 0;
+}
 
 const toggleSelectMenu = () => {
     document.querySelector('.c-dropdown__select').classList.toggle('open');
@@ -317,8 +385,6 @@ const handleCheckboxToggle = (btn) =>{
     if(btn.id !== "All" && all_btn.parentNode.classList[1]){
         all_btn.parentNode.classList.remove("h-pushed");
         all_btn.checked = false;
-        console.log('what?');
-        console.log(all_btn);
     }
     if(btn.id === "All" && isChecked){
         checkboxToggler.forEach(check =>{
@@ -333,6 +399,7 @@ const handleCheckboxToggle = (btn) =>{
     }else{
         btn.parentNode.classList.toggle("h-pushed");
     }
+    removeAlert();
 }
 
 const isArrayEmpty = (digits) => {
@@ -372,19 +439,35 @@ max.addEventListener('click', removeAlert);
 
 window.addEventListener('click', e => handleWindowClick(e));
 
-window.addEventListener('scroll', () => {
-    //return to prevent multiple function calls while showLoadingSpinner() function is still on stack
-    //return when in 'no items found' view
-    //return if there is nothing more to load
-    // if (filename === "favourites.html" || loading || document.querySelector('.emptyState__icon')) return;
-    const {
-        scrollTop,
-        scrollHeight,
-        clientHeight
-    } =
-    document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight - 250) {
-        // showLoadingSpinner();
-        console.log('hi');
-    }
-});
+// window.addEventListener('scroll', () => {
+//     //return to prevent multiple function calls while showLoadingSpinner() function is still on stack
+//     //return when in 'no items found' view
+//     //return if there is nothing more to load
+//     // if (filename === "favourites.html" || loading || document.querySelector('.emptyState__icon')) return;
+//     const {
+//         scrollTop,
+//         scrollHeight,
+//         clientHeight
+//     } =
+//     document.documentElement;
+//     if (scrollTop + clientHeight >= scrollHeight - 250) {
+//         // showLoadingSpinner();
+//         console.log('hi');
+//     }
+// });
+
+const idk = document.querySelector('.idk');
+
+function showChecked(){
+    const digits = [];
+    const checkboxItems = document.querySelectorAll('input[type="checkbox"]');
+
+    checkboxItems.forEach(item => {
+        item.checked ? digits.push(parseInt(item.id)) : ""
+    })
+    console.log(digits, "ya");
+}
+
+// idk.addEventListener('click', ()=>{
+//     showChecked();
+// });
