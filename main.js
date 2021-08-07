@@ -9,9 +9,11 @@ const lazyLoad = target => {
         entries.forEach(entry => {
 
             if (entry.isIntersecting) {
-                // let url = entry.target.getAttribute('data-src');
-                // entry.target.style.backgroundImage = `url("${url}")`;
-                console.log('hey');
+                const QUOTA = Number(getStaticValues('data-quota')) +1;
+                const data = getFormData();
+                setStaticValue('data-quota', QUOTA);
+                console.log(data[2].length);
+                handleList(data[0], data[1], data[2]);
                 observer.disconnect();
             }
         })
@@ -26,10 +28,18 @@ const handleClickGenerateList = () => {
     const range = getRangeOfDigits();
     const infoMsg = document.querySelector('.c-list__info');
     if (isFormFilledCorrectly(sequence, digits, range)) {
-        setPrintedValue(0);
+        setStaticValue('data-printed', 0);
+        deleteCurrentList();
         handleList(sequence, digits, range);
         infoMsg.classList.add('h-hide');
     }
+}
+
+const getFormData = () => {
+    const sequence = document.querySelector('.c-dropdown__select-trigger').textContent.trim().replace(/ /g, "");
+    const digits = getCheckedDigits();
+    const range = getRangeOfDigits();
+    return [sequence, digits, range];
 }
 
 const getCheckedDigits = () => {
@@ -99,7 +109,6 @@ function handleList(sequence, digits, range) {
             result.push(...window[`get${sequence}Items`](digits, range));
         }
     })
-    deleteCurrentList();
     renderList(result);
     renderListInfo(sequence);
     console.log(result);
@@ -227,7 +236,7 @@ function getPalindromeItems(digit, range) {
                 i+= OPTIMIZE[0];
         }
     }
-    setPrintedValue(counter);
+    setStaticValue('data-printed', counter);
     return result;
 }
 
@@ -272,15 +281,14 @@ function getPerfectSquareItems(digit, range) {
             }
         }
     }
-    setPrintedValue(counter);
+    setStaticValue('data-printed', counter);
     return arr;
 }
 
-const setPrintedValue = (printed) =>{
+const setStaticValue = (data, printed) =>{
     if (Number.isInteger(printed)) {
-        document.querySelector(`[data-printed]`).setAttribute("data-printed", `${printed}`);
+        document.querySelector(`[${data}]`).setAttribute(`${data}`, `${printed}`);
     }
-    console.log(document.querySelector(`[data-printed]`))
 }
 
 function getPrimeItems(digit, range) {
