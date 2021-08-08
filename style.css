@@ -64,6 +64,12 @@ footer p{
     margin: .75rem 0 0;
 }
 
+a{
+    text-decoration: none;
+    color: #ffffff;
+    
+}
+
 button,
 input {
     font-family: 'Montserrat', sans-serif;
@@ -266,13 +272,6 @@ input[type="checkbox"] {
     display: none;
 }
 
-.c-digits__wrapper::before{
-    content: '';
-    left: 545px;
-    bottom: -2rem;
-    display: none;
-}
-
 header {
     height: 3.5rem;
     width: 100%;
@@ -465,21 +464,33 @@ header {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     padding-bottom: 2.5%;
+    margin-top: -2.5%;
 }
 
 .c-output span{
     background-color: #F4FBF4;
-    padding: .5rem 0;
+    padding: .85rem 0;
     text-indent: 1rem;
     color: #222222;
 }
 
-.c-output span:nth-child(2n){
+/* .c-output span:nth-child(2n){ */
+/* .c-output span:nth-child(5n - 1), */
+.c-output span:nth-child(16n + 1),
+.c-output span:nth-child(16n + 2),
+.c-output span:nth-child(16n + 3),
+.c-output span:nth-child(16n + 4),
+.c-output span:nth-child(16n + 5),
+.c-output span:nth-child(16n + 6),
+.c-output span:nth-child(16n + 7),
+.c-output span:nth-child(16n + 8)
+{
     background-color: #CFEEC9;
 }
 
 .c-list__title{
     padding: 3.5rem 0 2rem;
+    margin-bottom: 2.5%;
     font-size: 1.75rem;
     font-weight: bold;
     text-align: center;
@@ -545,4 +556,38 @@ header {
     to {
         background-color: red;
     }
+}
+
+.c-about__title{
+    font-size: 2.5rem;
+    font-weight: bold;
+    padding: 2.5% 0;
+    text-align: center;
+}
+
+.c-about__main{
+    font-size: 1.25rem;
+    line-height: 1.5;
+}
+
+.c-about__list{
+    list-style: decimal;
+    padding: 1% 2.5%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.c-about__info{
+    padding-top: 2.5%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.c-contact__email{
+    color: #3BB027;
+    text-decoration: underline;
+}
+
+.c-contact__main{
+    text-align: center;
 }
