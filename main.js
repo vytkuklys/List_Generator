@@ -1,8 +1,8 @@
 const submitBtn = document.querySelector(".submit");
 const selectToggler = document.querySelector('.c-dropdown');
 const selectOptions = document.querySelectorAll(".c-dropdown__option");
-const checkboxToggler = document.querySelectorAll(".js-digits__check");
-const maxValueInput = document.getElementById("max");
+const checkboxDigits = document.querySelectorAll(".js-digits__check");
+const researchNumberBtn = document.querySelector('.c-search__btn');
 
 const lazyLoad = target => {
     const io = new IntersectionObserver((entries, observer) => {
@@ -10,16 +10,25 @@ const lazyLoad = target => {
 
             if (entry.isIntersecting) {
                 const QUOTA = Number(getStaticValues('data-quota')) +1;
+                const MIN = Number(entry.target.textContent);
                 const data = getFormData();
+                const range = getRange(data[2], MIN + 1);
                 setStaticValue('data-quota', QUOTA);
-                console.log(data[2].length);
-                handleList(data[0], data[1], data[2]);
+                handleList(data[0], data[1], range);
                 observer.disconnect();
             }
         })
     });
 
     io.observe(target);
+}
+
+const getRange = (data, min) =>{
+    let range = [];
+    if (!data.length) range[1] = 9999999999;
+    else range[1] = data[1];
+    range[0] = min;
+    return range;
 }
 
 const handleClickGenerateList = () => {
@@ -29,6 +38,7 @@ const handleClickGenerateList = () => {
     const infoMsg = document.querySelector('.c-list__info');
     if (isFormFilledCorrectly(sequence, digits, range)) {
         setStaticValue('data-printed', 0);
+        setStaticValue('data-quota', 1);
         deleteCurrentList();
         handleList(sequence, digits, range);
         infoMsg.classList.add('h-hide');
@@ -115,12 +125,14 @@ function handleList(sequence, digits, range) {
 }
 
 const deleteCurrentList = () =>{
-    const list = document.querySelector('.c-output');
-    if(list)
-    {
-        list.innerHTML = "";
-        list.remove();
-    }
+    const lists = document.querySelectorAll('.c-output');
+    lists.forEach(list =>{
+        if(list)
+        {
+            list.innerHTML = "";
+            list.remove();
+        }
+    })
 } 
 
 const renderListInfo = (sequence) =>{
@@ -129,7 +141,7 @@ const renderListInfo = (sequence) =>{
     title.textContent = `List of ${sequence} Numbers`;
 }
 
-function getFibonacciItems(digit, range) {
+function getFibonacciItems(digit, range = []) {
     const arr = [getFirstFibonacciValue(digit)];
     const MAX = getMaxValue(digit, range[1]);
     const MIN = getMinValue(digit, range[0]);
@@ -185,14 +197,13 @@ const renderList = (result) =>{
         span.textContent = `${result[i]}`;
         output.appendChild(span);
     }
-    console.log(output.lastChild);
     if (SIZE >= 3000){
         lazyLoad(output.lastChild);
     }
     main.appendChild(output);
 }
 
-function getCatalanItems(digit, range) {
+function getCatalanItems(digit, range = []) {
     const arr = [];
     const MAX = getMaxValue(digit, range[1]);
     const MIN = getMinValue(digit, range[0]);
@@ -212,7 +223,7 @@ const getFactorial = (digit)=> {
     }
 }
 
-function getPalindromeItems(digit, range) {
+function getPalindromeItems(digit, range = []) {
     const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
     const result = [];
@@ -395,12 +406,12 @@ const handleCheckboxToggle = (btn) =>{
         all_btn.checked = false;
     }
     if(btn.id === "All" && isChecked){
-        checkboxToggler.forEach(check =>{
+        checkboxDigits.forEach(check =>{
             check.parentNode.classList.remove("h-pushed");
             check.checked = false;
         })
     }else if(btn.id === "All" && isChecked === undefined){
-        checkboxToggler.forEach(check =>{
+        checkboxDigits.forEach(check =>{
             check.parentNode.classList.add("h-pushed");
             check.checked = true;
         })
@@ -425,6 +436,25 @@ const isRangeEmpty = (range) => {
     return range.length == 0;
 }
 
+const handleResearchNumber = () =>{
+    const input = Number(document.querySelector('.c-search__input').value);
+    if (!Number.isInteger(input)) return;
+    const numberData = {
+        "Number" : input,
+        "Fibonacci" : isInSequence('Fibonacci', input),
+        "Palindrome" : isInSequence('Palindrome', input),
+        "Catalan" : isInSequence('Catalan', input),
+        "PerfectSquare" : isInSequence('PerfectSquare', input)
+    }
+    console.log(numberData);
+}
+
+const isInSequence = (sequence, number) => {
+    const range = [number, number];
+    const digit = getDigitCount(number);
+    return (window[`get${sequence}Items`](digit, range)[0] === number);
+}
+
 submitBtn.addEventListener('click', (e) => {
     e.preventDefault();
     handleClickGenerateList();
@@ -434,7 +464,7 @@ for (const option of selectOptions) {
     option.addEventListener('click', (e) => selectItem(e));
 }
 
-checkboxToggler.forEach(btn =>{
+checkboxDigits.forEach(btn =>{
     btn.addEventListener("click", (event)=>handleCheckboxToggle(event.target));
 })
 
@@ -443,28 +473,11 @@ selectToggler.addEventListener('click', () => {
     removeAlert();
 });
 
+researchNumberBtn.addEventListener('click', handleResearchNumber);
+
 max.addEventListener('click', removeAlert);
 
 window.addEventListener('click', e => handleWindowClick(e));
-
-// window.addEventListener('scroll', () => {
-//     //return to prevent multiple function calls while showLoadingSpinner() function is still on stack
-//     //return when in 'no items found' view
-//     //return if there is nothing more to load
-//     // if (filename === "favourites.html" || loading || document.querySelector('.emptyState__icon')) return;
-//     const {
-//         scrollTop,
-//         scrollHeight,
-//         clientHeight
-//     } =
-//     document.documentElement;
-//     if (scrollTop + clientHeight >= scrollHeight - 250) {
-//         // showLoadingSpinner();
-//         console.log('hi');
-//     }
-// });
-
-const idk = document.querySelector('.idk');
 
 function showChecked(){
     const digits = [];
@@ -475,7 +488,3 @@ function showChecked(){
     })
     console.log(digits, "ya");
 }
-
-// idk.addEventListener('click', ()=>{
-//     showChecked();
-// });
