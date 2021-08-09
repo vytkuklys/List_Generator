@@ -23,12 +23,13 @@
         <li class="c-nav__item l-padding">Contact Us</li>
       </ul>
       <div class="c-search">
-        <input class="c-search__input" type="text" placeholder="Research a number">
+        <input class="c-search__input" type="text" onkeyup="this.value=this.value.replace(/[^\d]+/,'')" placeholder="Research a number">
+        <button class="c-search__btn"><i class="fas fa-search"></i></button>
       </div>
     </nav>
   </header>
   <!--surround the select box with a "c-dropdown__select" DIV element. Remember to set the width:-->
-  <main>
+  <main data-printed="0" data-quota="1">
     <form class="c-form">
       <div class="c-dropdown__select-wrapper c-dropdown">
         <div class="c-dropdown__select">
@@ -102,9 +103,67 @@
           <button class="submit c-generate-btn">Generate List</button>
       </div>
     </form>
+    <!-- <button class="idk">What is checked?</button> -->
     <h2 class="c-list__title">Customize a List</h2>
     <p class="c-list__info">*Select a sequence and choose a range or digit count to generate a list of numbers below</p>
-    <div class="c-output"></div>
+    <div class="c-output">
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+      <span>X</span>
+    </div>
   </main>
   <footer>
     <hr>
