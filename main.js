@@ -3,6 +3,7 @@ const selectToggler = document.querySelector('.c-dropdown');
 const selectOptions = document.querySelectorAll(".c-dropdown__option");
 const checkboxDigits = document.querySelectorAll(".js-digits__check");
 const researchNumberBtn = document.querySelector('.c-search__btn');
+const researchHideBtn = document.querySelector('.c-result__exit');
 
 const lazyLoad = target => {
     const io = new IntersectionObserver((entries, observer) => {
@@ -437,22 +438,69 @@ const isRangeEmpty = (range) => {
 }
 
 const handleResearchNumber = () =>{
-    const input = Number(document.querySelector('.c-search__input').value);
-    if (!Number.isInteger(input)) return;
+    const number = Number(document.querySelector('.c-search__input').value);
+    if (!Number.isInteger(number)) return;
     const numberData = {
-        "Number" : input,
-        "Fibonacci" : isInSequence('Fibonacci', input),
-        "Palindrome" : isInSequence('Palindrome', input),
-        "Catalan" : isInSequence('Catalan', input),
-        "PerfectSquare" : isInSequence('PerfectSquare', input)
+        "fibonacci" : isInSequence('Fibonacci', number),
+        "palindrome" : isInSequence('Palindrome', number),
+        "catalan" : isInSequence('Catalan', number),
+        "perfect-square" : isInSequence('PerfectSquare', number)
     }
-    console.log(numberData);
+    deleteResearchResults();
+    renderBlur();
+    displayResearchedNumber(number, numberData);
+}
+
+const displayResearchedNumber = (number, data)=>{
+    const table = document.querySelector('.c-result');
+    const title = document.querySelector('.c-result__title');
+
+    title.textContent = number;
+    for (const key of Object.keys(data)) {
+        const icon = document.createElement('i');
+        const item = document.querySelector(`.js-${key}`);
+        icon.classList.add('fas', `${data[key] ? 'fa-check-circle' : 'fa-times-circle'}`); 
+        item.appendChild(icon);
+    }
+    table.classList.remove('h-hide')
+}
+
+const hideResearchTable = () =>{
+    const table = document.querySelector('.c-result');
+
+    table.classList.add('h-hide');
+    deleteResearchResults();
+    removeBlur();
+}
+
+const deleteResearchResults = () =>{
+    const items = document.querySelectorAll('.c-result__item');
+
+    items.forEach(item =>{
+        console.log(item.lastChild)
+        if(!item.lastChild.classList.contains('c-result__name')){
+            item.removeChild(item.lastChild);
+        }
+    });
 }
 
 const isInSequence = (sequence, number) => {
     const range = [number, number];
     const digit = getDigitCount(number);
     return (window[`get${sequence}Items`](digit, range)[0] === number);
+}
+
+const renderBlur = () => {
+    if (document.querySelector('.blur__JS')) return;
+
+    const blur = document.createElement('div');
+    blur.classList.add('blur__JS');
+    document.body.appendChild(blur);
+}
+
+const removeBlur = () => {
+    const blur = document.querySelector('.blur__JS');
+    blur.parentNode.removeChild(blur);
 }
 
 submitBtn.addEventListener('click', (e) => {
@@ -474,6 +522,8 @@ selectToggler.addEventListener('click', () => {
 });
 
 researchNumberBtn.addEventListener('click', handleResearchNumber);
+
+researchHideBtn.addEventListener('click', hideResearchTable);
 
 max.addEventListener('click', removeAlert);
 
