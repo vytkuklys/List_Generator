@@ -103,9 +103,7 @@
           <button class="submit c-generate-btn">Generate List</button>
       </div>
     </form>
-    <!-- <button class="idk">What is checked?</button> -->
-    <h2 class="c-list__title">Customize a List</h2>
-    <p class="c-list__info">*Select a sequence and choose a range or digit count to generate a list of numbers below</p>
+    <h2 class="c-list__title">Customize a List Above</h2>
     <div class="c-output">
       <span>X</span>
       <span>X</span>
@@ -165,6 +163,27 @@
       <span>X</span>
     </div>
   </main>
+  <div class="c-pagination__wrapper">
+    <button class="c-digits__btn c-pagination__btn js-pagination__previous"><</button>
+    <button class="c-digits__btn c-pagination__btn js-pagination__page h-active">1</button>
+    <button class="c-digits__btn c-pagination__btn js-pagination__page">2</button>
+    <button class="c-digits__btn c-pagination__btn js-pagination__page">3</button>
+    <button class="c-digits__btn c-pagination__btn js-pagination__page">4</button>
+    <button class="c-digits__btn c-pagination__btn js-pagination__page">5</button>
+    <button class="c-digits__btn c-pagination__btn js-pagination__next">></button>
+  </div>
+  <div class="c-result h-hide">
+    <div class="c-result__header">
+      <button class="c-result__exit">X</button>
+    </div>
+    <p class="c-result__title"></p>
+    <ul class="c-result__items">
+      <li class="c-result__item js-catalan">Catalan: </li>
+      <li class="c-result__item js-fibonacci">Fibonacci: </li>
+      <li class="c-result__item js-palindrome">Palindrome: </li>
+      <li class="c-result__item js-perfect-square">Perfect Square: </li>
+    </ul>
+  </div>
   <footer>
     <hr>
     <a href="#"><i class="fas fa-arrow-up"></i>Back to top</a>

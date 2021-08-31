@@ -4,13 +4,15 @@ const selectOptions = document.querySelectorAll(".c-dropdown__option");
 const checkboxDigits = document.querySelectorAll(".js-digits__check");
 const researchNumberBtn = document.querySelector('.c-search__btn');
 const researchHideBtn = document.querySelector('.c-result__exit');
+const pageNextBtn = document.querySelector('.js-pagination__next');
+const pagePreviousBtn = document.querySelector('.js-pagination__previous');
 
 const lazyLoad = target => {
     const io = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
 
             if (entry.isIntersecting) {
-                const QUOTA = Number(getStaticValues('data-quota')) +1;
+                const QUOTA = Number(getStaticValues('data-quota')) + 1;
                 const MIN = Number(entry.target.textContent);
                 const data = getFormData();
                 const range = getRange(data[2], MIN + 1);
@@ -20,30 +22,29 @@ const lazyLoad = target => {
             }
         })
     });
-
     io.observe(target);
 }
 
-const getRange = (data, min) =>{
-    let range = [];
-    if (!data.length) range[1] = 9999999999;
-    else range[1] = data[1];
-    range[0] = min;
-    return range;
+const displayNextPage = () => {
+    const MIN = document.querySelector('.c-output').lastChild.textContent;
+    const data = getFormData();
+    const range = getRange(parseInt(MIN) + 1, data[2][1]);
+    updateQuota(1);
+    deleteCurrentList();
+    handleList(data[0], data[1], range);
+    changeSelectedPage();
+    console.log(getStaticValues('data-printed'))
 }
 
-const handleClickGenerateList = () => {
-    const sequence = document.querySelector('.c-dropdown__select-trigger').textContent.trim().replace(/ /g, "");
-    const digits = getCheckedDigits();
-    const range = getRangeOfDigits();
-    const infoMsg = document.querySelector('.c-list__info');
-    if (isFormFilledCorrectly(sequence, digits, range)) {
-        setStaticValue('data-printed', 0);
-        setStaticValue('data-quota', 1);
-        deleteCurrentList();
-        handleList(sequence, digits, range);
-        infoMsg.classList.add('h-hide');
-    }
+const displayPreviousPage = () => {
+    const MAX = document.querySelector('.c-output').firstChild.textContent;
+    const data = getFormData();
+    const range = getRange(data[2][0], parseInt(MAX) - 1);
+    updateQuota(-1);
+    deleteCurrentList();
+    handleReversedList(data[0], data[1], range);
+    changeSelectedPage();
+    console.log(getStaticValues('data-printed'))
 }
 
 const getFormData = () => {
@@ -53,12 +54,47 @@ const getFormData = () => {
     return [sequence, digits, range];
 }
 
+const updateQuota = (num) => {
+    const QUOTA = Number(getStaticValues('data-quota')) + num;
+    setStaticValue('data-quota', QUOTA);
+}
+
+const changeSelectedPage = () => {
+    const pages = document.querySelectorAll('.js-pagination__page');
+    const quota = Number(getStaticValues('data-quota'));
+    let i = 0;
+    for (; !pages[i].classList.contains('h-active'); i++);
+    pages[i].classList.remove('h-active');
+    pages[quota - 1].classList.add('h-active');
+}
+
+const getRange = (min, max) => {
+    let range = [];
+    if (!max) range[1] = 9999999999;
+    else range[1] = max;
+    range[0] = parseInt(min);
+    return range;
+}
+
+const handleClickGenerateList = () => {
+    const sequence = document.querySelector('.c-dropdown__select-trigger').textContent.trim().replace(/ /g, "");
+    const digits = getCheckedDigits();
+    const range = getRangeOfDigits();
+    if (isFormFilledCorrectly(sequence, digits, range)) {
+        setStaticValue('data-printed', 0);
+        setStaticValue('data-quota', 1);
+        deleteCurrentList();
+        handleList(sequence, digits, range);
+    }
+}
+
+
 const getCheckedDigits = () => {
     const checkboxItems = document.querySelectorAll('input[type="checkbox"]');
     const all = document.getElementById('All');
     const digits = [];
 
-    if(all.checked)
+    if (all.checked)
         return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     checkboxItems.forEach(item => {
         item.checked ? digits.push(parseInt(item.id)) : ""
@@ -89,7 +125,7 @@ const isFormFilledCorrectly = (sequence, digits, range) => {
     return true;
 }
 
-const displayAlertUnselectedSequence = () =>{
+const displayAlertUnselectedSequence = () => {
     const select = document.querySelector(".c-dropdown__select-trigger");
     select.classList.add("h-alert");
 }
@@ -122,24 +158,76 @@ function handleList(sequence, digits, range) {
     })
     renderList(result);
     renderListInfo(sequence);
-    console.log(result);
+}
+/*reverse list is used for the purposes of pagination*/
+function handleReversedList(sequence, digits, range) {
+    const digitsArr = [];
+    let arr = [];
+    let result = [];
+    let length;
+    if (isArrayEmpty(digits)) {
+        digitsArr.push(...getRangeDigits(range));
+    } else {
+        digitsArr.push(...digits);
+    }
+    length = digitsArr.length;
+    while(length-- > 0)
+    {
+        if (isArrayEmpty(digits[length])) {
+            result.push(...window[`get${sequence}ItemsReversed`](1, range));
+        } else {
+            result.push(...window[`get${sequence}ItemsReversed`](digits[length], range));
+        }
+    }
+    arr = reverseArr(result);
+    console.log(arr);
+    renderList(arr);
+    renderListInfo(sequence);
 }
 
-const deleteCurrentList = () =>{
+function reverseArr(arr) {
+    let array = arr;
+    var left = null;
+    var right = null;
+    var length = array.length;
+    for (left = 0, right = length - 1; left < right; left += 1, right -= 1) {
+        var temporary = array[left];
+        array[left] = array[right];
+        array[right] = temporary;
+    }
+    return array;
+}
+
+const deleteCurrentList = () => {
     const lists = document.querySelectorAll('.c-output');
-    lists.forEach(list =>{
-        if(list)
-        {
+    lists.forEach(list => {
+        if (list) {
             list.innerHTML = "";
             list.remove();
         }
     })
-} 
+}
 
-const renderListInfo = (sequence) =>{
+const renderListInfo = (sequence) => {
     const title = document.querySelector('.c-list__title');
     sequence = sequence === 'PerfectSquare' ? 'Perfect Square' : sequence;
     title.textContent = `List of ${sequence} Numbers`;
+}
+
+const renderList = (result) => {
+    const output = document.createElement('div');
+    const main = document.querySelector('main');
+    const SIZE = result.length;
+    output.classList.add('c-output');
+    for (let i = 0; i < SIZE; i++) {
+        const span = document.createElement('span');
+        span.textContent = `${result[i]}`;
+        output.appendChild(span);
+    }
+    if (SIZE >= 3000) {
+        lazyLoad(output.lastChild);
+    }
+    main.appendChild(output);
 }
 
 function getFibonacciItems(digit, range = []) {
@@ -152,7 +240,7 @@ function getFibonacciItems(digit, range = []) {
         arr.push(fib);
         fib = arr[i] + arr[i + 1];
     }
-    if(arr[0] === 1) arr.unshift(0);
+    if (arr[0] === 1) arr.unshift(0);
     return arr.filter(item => item >= MIN && item <= MAX);
 }
 
@@ -188,35 +276,19 @@ const getSecondFibonnaciValue = (digits) => {
     return values[digits];
 }
 
-const renderList = (result) =>{
-    const output = document.createElement('div');
-    const main = document.querySelector('main');
-    const SIZE = result.length;
-    output.classList.add('c-output');
-    for (let i = 0; i < SIZE; i++) {
-        const span = document.createElement('span');
-        span.textContent = `${result[i]}`;
-        output.appendChild(span);
-    }
-    if (SIZE >= 3000){
-        lazyLoad(output.lastChild);
-    }
-    main.appendChild(output);
-}
-
 function getCatalanItems(digit, range = []) {
     const arr = [];
     const MAX = getMaxValue(digit, range[1]);
     const MIN = getMinValue(digit, range[0]);
     let catalan = 0;
     for (let i = 0; catalan <= MAX; i++) {
-        catalan = getFactorial(i*2)/(getFactorial(i+1)*getFactorial(i));
+        catalan = getFactorial(i * 2) / (getFactorial(i + 1) * getFactorial(i));
         arr.push(Math.round(catalan));
     }
     return arr.filter(item => item >= MIN && item <= MAX);
 }
 
-const getFactorial = (digit)=> {
+const getFactorial = (digit) => {
     if (digit == 0 || digit == 1) {
         return 1;
     } else {
@@ -240,20 +312,20 @@ function getPalindromeItems(digit, range = []) {
                 .reverse()
                 .join('')
             ) === i) {
-                result.push(i);
-                counter++;
-                if(counter % OPTIMIZE[2] === 0){
-                    i -= OPTIMIZE[1];
-                }
-                i+= OPTIMIZE[0];
+            result.push(i);
+            counter++;
+            if (counter % OPTIMIZE[2] === 0) {
+                i -= OPTIMIZE[1];
+            }
+            i += OPTIMIZE[0];
         }
     }
     setStaticValue('data-printed', counter);
     return result;
 }
 
-const getOptimalValues = (digit) =>{
-    switch(digit){
+const getOptimalValues = (digit) => {
+    switch (digit) {
         case 1:
         case 2:
         case 3:
@@ -266,9 +338,9 @@ const getOptimalValues = (digit) =>{
             return [999, 990, 10];
         case 7:
             return [999, 990, 100];
-        case 8: 
+        case 8:
             return [9999, 9990, 10];
-        case 9: 
+        case 9:
             return [9999, 9990, 100];
         case 10:
             return [99999, 99989, 10];
@@ -284,7 +356,7 @@ function getPerfectSquareItems(digit, range) {
     const PRINTED = getStaticValues('data-printed');
     const QUOTA = getStaticValues('data-quota');
     let counter = PRINTED ? PRINTED : 0;
-    for (let i = MIN; i <= MAX && counter < 3000 * QUOTA; i++) {
+    for (let i = MIN; i <= MAX && counter < 248 * QUOTA; i++) {
         if (i >= 0) {
             let root = Math.sqrt(i);
             if (Number.isInteger(root)) {
@@ -297,7 +369,30 @@ function getPerfectSquareItems(digit, range) {
     return arr;
 }
 
-const setStaticValue = (data, printed) =>{
+function getPerfectSquareItemsReversed(digit, range) {
+    const MIN = getMinValue(digit, range[0]);
+    const MAX = getMaxValue(digit, range[1]);
+    const QUOTA = getStaticValues('data-quota');
+    const arr = [];
+    let printed = Number(getStaticValues('data-printed'));
+    let counter = 0;
+    
+    for (let i = MAX; i >= MIN == 1 ? 0 : MIN && printed - counter > 248 * QUOTA; i--) {
+        if (i >= 0) {
+            let root = Math.sqrt(i);
+            if (Number.isInteger(root)) {
+                arr.push(i)
+                counter++;
+            }
+        }
+    }
+    console.log("printed:", printed, "total:", printed - counter);
+    console.log("counter:", counter, "quota:", QUOTA * 248);
+    setStaticValue('data-printed', printed - counter);
+    return arr;
+}
+
+const setStaticValue = (data, printed) => {
     if (Number.isInteger(printed)) {
         document.querySelector(`[${data}]`).setAttribute(`${data}`, `${printed}`);
     }
@@ -323,7 +418,7 @@ function getPrimeItems(digit, range) {
     }
     for (let i = MIN; i < MAX && counter < 5000; i++) {
         // if (arr[i] && i > MIN && i < MAX) {
-        if(arr[i]){
+        if (arr[i]) {
             result.push(i);
             counter++;
         }
@@ -331,9 +426,9 @@ function getPrimeItems(digit, range) {
     return result;
 };
 
-const getStaticValues = (data) =>{
+const getStaticValues = (data) => {
     const value = document.querySelector(`[${data}]`).getAttribute(`${data}`);
-    if(Number(value)){
+    if (Number(value)) {
         return value;
     }
     return 0;
@@ -345,7 +440,7 @@ const toggleSelectMenu = () => {
 
 const removeAlert = () => {
     const alert = document.querySelectorAll(".h-alert");
-    alert.forEach(alert =>{
+    alert.forEach(alert => {
         alert.classList.remove('h-alert');
     });
 }
@@ -398,25 +493,25 @@ const getMinValue = (digits, min = 0) => {
     return min === 0 && digits == 1 ? min : start < min ? min : start;
 }
 
-const handleCheckboxToggle = (btn) =>{
+const handleCheckboxToggle = (btn) => {
     const isChecked = btn.parentNode.classList[1];
     const all_btn = document.getElementById('All');
 
-    if(btn.id !== "All" && all_btn.parentNode.classList[1]){
+    if (btn.id !== "All" && all_btn.parentNode.classList[1]) {
         all_btn.parentNode.classList.remove("h-pushed");
         all_btn.checked = false;
     }
-    if(btn.id === "All" && isChecked){
-        checkboxDigits.forEach(check =>{
+    if (btn.id === "All" && isChecked) {
+        checkboxDigits.forEach(check => {
             check.parentNode.classList.remove("h-pushed");
             check.checked = false;
         })
-    }else if(btn.id === "All" && isChecked === undefined){
-        checkboxDigits.forEach(check =>{
+    } else if (btn.id === "All" && isChecked === undefined) {
+        checkboxDigits.forEach(check => {
             check.parentNode.classList.add("h-pushed");
             check.checked = true;
         })
-    }else{
+    } else {
         btn.parentNode.classList.toggle("h-pushed");
     }
     removeAlert();
@@ -437,21 +532,21 @@ const isRangeEmpty = (range) => {
     return range.length == 0;
 }
 
-const handleResearchNumber = () =>{
+const handleResearchNumber = () => {
     const number = Number(document.querySelector('.c-search__input').value);
     if (!Number.isInteger(number)) return;
     const numberData = {
-        "fibonacci" : isInSequence('Fibonacci', number),
-        "palindrome" : isInSequence('Palindrome', number),
-        "catalan" : isInSequence('Catalan', number),
-        "perfect-square" : isInSequence('PerfectSquare', number)
+        "fibonacci": isInSequence('Fibonacci', number),
+        "palindrome": isInSequence('Palindrome', number),
+        "catalan": isInSequence('Catalan', number),
+        "perfect-square": isInSequence('PerfectSquare', number)
     }
     deleteResearchResults();
     renderBlur();
     displayResearchedNumber(number, numberData);
 }
 
-const displayResearchedNumber = (number, data)=>{
+const displayResearchedNumber = (number, data) => {
     const table = document.querySelector('.c-result');
     const title = document.querySelector('.c-result__title');
 
@@ -459,13 +554,13 @@ const displayResearchedNumber = (number, data)=>{
     for (const key of Object.keys(data)) {
         const icon = document.createElement('i');
         const item = document.querySelector(`.js-${key}`);
-        icon.classList.add('fas', `${data[key] ? 'fa-check-circle' : 'fa-times-circle'}`); 
+        icon.classList.add('fas', `${data[key] ? 'fa-check-circle' : 'fa-times-circle'}`);
         item.appendChild(icon);
     }
     table.classList.remove('h-hide')
 }
 
-const hideResearchTable = () =>{
+const hideResearchTable = () => {
     const table = document.querySelector('.c-result');
 
     table.classList.add('h-hide');
@@ -473,12 +568,11 @@ const hideResearchTable = () =>{
     removeBlur();
 }
 
-const deleteResearchResults = () =>{
+const deleteResearchResults = () => {
     const items = document.querySelectorAll('.c-result__item');
 
-    items.forEach(item =>{
-        console.log(item.lastChild)
-        if(!item.lastChild.classList.contains('c-result__name')){
+    items.forEach(item => {
+        if (item.lastChild.classList) {
             item.removeChild(item.lastChild);
         }
     });
@@ -512,8 +606,8 @@ for (const option of selectOptions) {
     option.addEventListener('click', (e) => selectItem(e));
 }
 
-checkboxDigits.forEach(btn =>{
-    btn.addEventListener("click", (event)=>handleCheckboxToggle(event.target));
+checkboxDigits.forEach(btn => {
+    btn.addEventListener("click", (event) => handleCheckboxToggle(event.target));
 })
 
 selectToggler.addEventListener('click', () => {
@@ -525,16 +619,19 @@ researchNumberBtn.addEventListener('click', handleResearchNumber);
 
 researchHideBtn.addEventListener('click', hideResearchTable);
 
+pageNextBtn.addEventListener('click', displayNextPage);
+
+pagePreviousBtn.addEventListener('click', displayPreviousPage);
+
 max.addEventListener('click', removeAlert);
 
 window.addEventListener('click', e => handleWindowClick(e));
 
-function showChecked(){
+function showChecked() {
     const digits = [];
     const checkboxItems = document.querySelectorAll('input[type="checkbox"]');
 
     checkboxItems.forEach(item => {
         item.checked ? digits.push(parseInt(item.id)) : ""
     })
-    console.log(digits, "ya");
 }
