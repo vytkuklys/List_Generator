@@ -28,7 +28,6 @@
       </div>
     </nav>
   </header>
-  <!--surround the select box with a "c-dropdown__select" DIV element. Remember to set the width:-->
   <main data-printed="0" data-quota="1">
     <form class="c-form">
       <div class="c-dropdown__select-wrapper c-dropdown">
@@ -163,13 +162,12 @@
       <span>X</span>
     </div>
   </main>
-  <div class="c-pagination__wrapper">
+  <div class="c-pagination__wrapper h-hide">
     <button class="c-digits__btn c-pagination__btn js-pagination__previous"><</button>
-    <button class="c-digits__btn c-pagination__btn js-pagination__page h-active">1</button>
-    <button class="c-digits__btn c-pagination__btn js-pagination__page">2</button>
-    <button class="c-digits__btn c-pagination__btn js-pagination__page">3</button>
-    <button class="c-digits__btn c-pagination__btn js-pagination__page">4</button>
-    <button class="c-digits__btn c-pagination__btn js-pagination__page">5</button>
+    <button class="c-digits__btn c-pagination__btn js-pagination__page h-active h-hide" data-id="1">1</button>
+    <button class="c-digits__btn c-pagination__btn js-pagination__page h-hide" data-id="2">2</button>
+    <button class="c-digits__btn c-pagination__btn js-pagination__page h-hide" data-id="3">3</button>
+    <button class="c-digits__btn c-pagination__btn js-pagination__page h-hide" data-id="4">4</button>
     <button class="c-digits__btn c-pagination__btn js-pagination__next">></button>
   </div>
   <div class="c-result h-hide">

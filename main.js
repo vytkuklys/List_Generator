@@ -1,3 +1,5 @@
+'use strict';
+
 const submitBtn = document.querySelector(".submit");
 const selectToggler = document.querySelector('.c-dropdown');
 const selectOptions = document.querySelectorAll(".c-dropdown__option");
@@ -6,6 +8,16 @@ const researchNumberBtn = document.querySelector('.c-search__btn');
 const researchHideBtn = document.querySelector('.c-result__exit');
 const pageNextBtn = document.querySelector('.js-pagination__next');
 const pagePreviousBtn = document.querySelector('.js-pagination__previous');
+const pageNumberBtn = document.querySelectorAll('.js-pagination__page');
+
+const test = {
+    "Catalan": getCatalanItems,
+    "Fibonacci": getFibonacciItems,
+    "PerfectSquare": getPerfectSquareItems,
+    "Palindrome": getPalindromeItems,
+    "countPerfectSquare": countPerfectSquarePages,
+    "countPalindrome": countPalindromePages
+}
 
 const lazyLoad = target => {
     const io = new IntersectionObserver((entries, observer) => {
@@ -26,25 +38,84 @@ const lazyLoad = target => {
 }
 
 const displayNextPage = () => {
+    let current = document.querySelector('.h-active');
+    const LAST = 0;
+    if (current.classList.contains('h-last') && refreshPagination() === 0) return;
+    current = current.textContent;
     const MIN = document.querySelector('.c-output').lastChild.textContent;
     const data = getFormData();
     const range = getRange(parseInt(MIN) + 1, data[2][1]);
-    updateQuota(1);
     deleteCurrentList();
     handleList(data[0], data[1], range);
-    changeSelectedPage();
-    console.log(getStaticValues('data-printed'))
+    current = parseInt(current) % 4;
+    if (current == LAST) {
+        changePaginationNumbers(4);
+    }
+    changeSelectedPageTo(current);
+}
+
+const refreshPagination = () => {
+    const sequence = document.querySelector('.c-dropdown__select-trigger').textContent.trim().replace(/ /g, "");
+    const MIN = document.querySelector('.c-output').lastChild.textContent;
+    const digits = getCheckedDigits();
+    const range = getRange(parseInt(MIN) + 1, getRangeOfDigits()[1]);
+    const PAGE = 248;
+    const pages = Math.ceil(getPagesCount(sequence, digits, range) / PAGE);
+    if (pages === 0) {
+        return 0;
+    }
+    hidePagination();
+    handlePagination(sequence, digits, range);
 }
 
 const displayPreviousPage = () => {
+    let current = document.querySelector('.h-active').textContent;
+    const START = '1';
+    if (current === START) return;
     const MAX = document.querySelector('.c-output').firstChild.textContent;
     const data = getFormData();
     const range = getRange(data[2][0], parseInt(MAX) - 1);
-    updateQuota(-1);
     deleteCurrentList();
     handleReversedList(data[0], data[1], range);
-    changeSelectedPage();
-    console.log(getStaticValues('data-printed'))
+    current = (parseInt(current) % 4);
+    if (current >= 2) {
+        changeSelectedPageTo(current - 2);
+    } else if (current == 1) {
+        changePaginationNumbers(-4);
+        displayPagination(4);
+        changeSelectedPageTo(3);
+    } else if (current == 0) {
+        changeSelectedPageTo(2);
+    }
+}
+
+const changePaginationNumbers = (num) => {
+    pageNumberBtn.forEach(number => {
+        let current = parseInt(number.textContent);
+        number.textContent = `${current + num}`;
+    })
+}
+
+const refreshPaginationNumbers = () => {
+    let i = 1;
+    pageNumberBtn.forEach(number => number.textContent = `${i++}`);
+}
+
+const displayClickedPage = (e) => {
+    let current = document.querySelector('.h-active').getAttribute('data-id');
+    const clicked = e.path[0].getAttribute('data-id');
+    if (!clicked) return;
+    if (current < clicked) {
+        while (current < clicked) {
+            displayNextPage();
+            current++;
+        }
+    } else if (current > clicked) {
+        while (current > clicked) {
+            displayPreviousPage();
+            current--;
+        }
+    }
 }
 
 const getFormData = () => {
@@ -59,13 +130,12 @@ const updateQuota = (num) => {
     setStaticValue('data-quota', QUOTA);
 }
 
-const changeSelectedPage = () => {
+const changeSelectedPageTo = (current) => {
     const pages = document.querySelectorAll('.js-pagination__page');
-    const quota = Number(getStaticValues('data-quota'));
     let i = 0;
     for (; !pages[i].classList.contains('h-active'); i++);
     pages[i].classList.remove('h-active');
-    pages[quota - 1].classList.add('h-active');
+    pages[current].classList.add('h-active');
 }
 
 const getRange = (min, max) => {
@@ -81,13 +151,74 @@ const handleClickGenerateList = () => {
     const digits = getCheckedDigits();
     const range = getRangeOfDigits();
     if (isFormFilledCorrectly(sequence, digits, range)) {
-        setStaticValue('data-printed', 0);
-        setStaticValue('data-quota', 1);
+        // setStaticValue('data-printed', 0);
+        // setStaticValue('data-quota', 1);
         deleteCurrentList();
         handleList(sequence, digits, range);
+        hidePagination();
+        refreshPaginationNumbers();
+        handlePagination(sequence, digits, range);
     }
 }
 
+const handlePagination = (sequence, digits, range) => {
+    const PAGE = 248;
+    const page_count = Math.ceil(getPagesCount(sequence, digits, range) / PAGE);
+
+    displayPagination(page_count);
+}
+
+const displayPagination = (count) => {
+    const pages = document.querySelectorAll('.js-pagination__page');
+    const pagination = document.querySelector('.c-pagination__wrapper');
+
+    if (count < 1) return;
+    let i = 0;
+    for (; i < count && i < 4; i++) {
+        pages[i].classList.remove('h-hide');
+        pages[i].classList.remove('h-active');
+        pages[i].classList.remove('h-last');
+        if (i == 0) {
+            pages[0].classList.add('h-active');
+        }
+    }
+
+    pages[i - 1].classList.add('h-last');
+    pagination.classList.remove('h-hide');
+}
+
+const hidePagination = () => {
+    const pages = document.querySelectorAll('.js-pagination__page');
+    const pagination = document.querySelector('.c-pagination__wrapper');
+
+    for (let i = 0; i < 4; i++) {
+        pages[i].classList.add('h-hide');
+    }
+    pagination.classList.add('h-hide');
+}
+
+const getPagesCount = (sequence, digits, range) => {
+    const digitsArr = [];
+    const FOURPAGES = 992;
+    let counter = 0;
+
+    if (isArrayEmpty(digits)) {
+        digitsArr.push(...getRangeDigits(range));
+    } else {
+        digitsArr.push(...digits);
+    }
+    digitsArr.forEach(digits => {
+        if (counter >= FOURPAGES) {
+            return;
+        }
+        if (isArrayEmpty(digits)) {
+            counter += test[`count${sequence}`](1, range);
+        } else {
+            counter += test[`count${sequence}`](digits, range);
+        }
+    });
+    return counter;
+}
 
 const getCheckedDigits = () => {
     const checkboxItems = document.querySelectorAll('input[type="checkbox"]');
@@ -151,9 +282,9 @@ function handleList(sequence, digits, range) {
     }
     digitsArr.forEach(digits => {
         if (isArrayEmpty(digits)) {
-            result.push(...window[`get${sequence}Items`](1, range));
+            result.push(...window[`get${sequence}Items`](1, range, result.length));
         } else {
-            result.push(...window[`get${sequence}Items`](digits, range));
+            result.push(...window[`get${sequence}Items`](digits, range, result.length));
         }
     })
     renderList(result);
@@ -171,16 +302,14 @@ function handleReversedList(sequence, digits, range) {
         digitsArr.push(...digits);
     }
     length = digitsArr.length;
-    while(length-- > 0)
-    {
+    while (length-- > 0) {
         if (isArrayEmpty(digits[length])) {
-            result.push(...window[`get${sequence}ItemsReversed`](1, range));
+            result.push(...window[`get${sequence}ItemsReversed`](1, range, result.length));
         } else {
-            result.push(...window[`get${sequence}ItemsReversed`](digits[length], range));
+            result.push(...window[`get${sequence}ItemsReversed`](digits[length], range, result.length));
         }
     }
     arr = reverseArr(result);
-    console.log(arr);
     renderList(arr);
     renderListInfo(sequence);
 }
@@ -296,15 +425,14 @@ const getFactorial = (digit) => {
     }
 }
 
-function getPalindromeItems(digit, range = []) {
+function getPalindromeItems(digit, range = [], length) {
     const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
     const result = [];
-    const PRINTED = getStaticValues('data-printed');
-    const QUOTA = getStaticValues('data-quota');
     const OPTIMIZE = getOptimalValues(digit);
-    let counter = PRINTED ? PRINTED : 0;
-    for (let i = MIN; i <= MAX && counter < 3000 * QUOTA; i++) {
+    let counter = 0;
+    counter = 0;
+    for (let i = MIN; i <= MAX && length + counter < 248; i++) {
         if (parseFloat(
                 i
                 .toString()
@@ -320,9 +448,58 @@ function getPalindromeItems(digit, range = []) {
             i += OPTIMIZE[0];
         }
     }
-    setStaticValue('data-printed', counter);
     return result;
 }
+
+function countPalindromePages(digit, range) {
+    const MIN = getMinValue(digit, range[0]);
+    const MAX = getMaxValue(digit, range[1]);
+    const OPTIMIZE = getOptimalValues(digit);
+    let counter = 0;
+    for (let i = MIN; i <= MAX && counter < 992; i++) {
+        if (parseFloat(
+                i
+                .toString()
+                .split('')
+                .reverse()
+                .join('')
+            ) === i) {
+            counter++;
+            if (counter % OPTIMIZE[2] === 0) {
+                i -= OPTIMIZE[1];
+            }
+            i += OPTIMIZE[0];
+        }
+    }
+    return counter;
+}
+
+// function getPalindromeItemsReversed(digit, range = [], length) {
+//     const MIN = getMinValue(digit, range[0]);
+//     const MAX = getMaxValue(digit, range[1]);
+//     const result = [];
+//     const OPTIMIZE = getOptimalValues(digit);
+//     let counter = 0;
+//     counter = 0;
+//     for (let i = MAX; i >= (MIN == 1 ? 0 : MIN) && length + counter < 248; i--) {
+//         if (parseFloat(
+//                 i
+//                 .toString()
+//                 .split('')
+//                 .reverse()
+//                 .join('')
+//             ) === i) {
+//             result.push(i);
+//             counter++;
+//             if (counter % OPTIMIZE[2] === 0) {
+//                 i -= OPTIMIZE[1];
+//             }
+//             i += OPTIMIZE[0];
+//         }
+//     }
+//     return result;
+// }
+
 
 const getOptimalValues = (digit) => {
     switch (digit) {
@@ -349,14 +526,13 @@ const getOptimalValues = (digit) => {
     }
 }
 
-function getPerfectSquareItems(digit, range) {
+function getPerfectSquareItems(digit, range, pushed) {
     const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
+    const PAGE = 248;
     const arr = [];
-    const PRINTED = getStaticValues('data-printed');
-    const QUOTA = getStaticValues('data-quota');
-    let counter = PRINTED ? PRINTED : 0;
-    for (let i = MIN; i <= MAX && counter < 248 * QUOTA; i++) {
+    let counter = 0;
+    for (let i = MIN; i <= MAX && counter + pushed < PAGE; i++) {
         if (i >= 0) {
             let root = Math.sqrt(i);
             if (Number.isInteger(root)) {
@@ -365,19 +541,30 @@ function getPerfectSquareItems(digit, range) {
             }
         }
     }
-    setStaticValue('data-printed', counter);
     return arr;
 }
 
-function getPerfectSquareItemsReversed(digit, range) {
+function countPerfectSquarePages(digit, range) {
     const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
-    const QUOTA = getStaticValues('data-quota');
-    const arr = [];
-    let printed = Number(getStaticValues('data-printed'));
     let counter = 0;
-    
-    for (let i = MAX; i >= MIN == 1 ? 0 : MIN && printed - counter > 248 * QUOTA; i--) {
+    for (let i = MIN; i <= MAX && counter < 992; i++) {
+        if (i >= 0) {
+            let root = Math.sqrt(i);
+            if (Number.isInteger(root)) {
+                counter++;
+            }
+        }
+    }
+    return counter;
+}
+
+function getPerfectSquareItemsReversed(digit, range, length) {
+    const MIN = getMinValue(digit, range[0]);
+    const MAX = getMaxValue(digit, range[1]);
+    const arr = [];
+    let counter = 0;
+    for (let i = MAX; i >= (MIN == 1 ? 0 : MIN) && length + counter < 248; i--) {
         if (i >= 0) {
             let root = Math.sqrt(i);
             if (Number.isInteger(root)) {
@@ -386,9 +573,6 @@ function getPerfectSquareItemsReversed(digit, range) {
             }
         }
     }
-    console.log("printed:", printed, "total:", printed - counter);
-    console.log("counter:", counter, "quota:", QUOTA * 248);
-    setStaticValue('data-printed', printed - counter);
     return arr;
 }
 
@@ -417,7 +601,6 @@ function getPrimeItems(digit, range) {
         }
     }
     for (let i = MIN; i < MAX && counter < 5000; i++) {
-        // if (arr[i] && i > MIN && i < MAX) {
         if (arr[i]) {
             result.push(i);
             counter++;
@@ -446,7 +629,7 @@ const removeAlert = () => {
 }
 
 const selectItem = e => {
-    item = e.target;
+    let item = e.target;
     if (!item.classList.contains('selected')) {
         if (item.parentNode.querySelector('.c-dropdown__option.selected')) {
             item.parentNode.querySelector('.c-dropdown__option.selected').classList.remove('selected');
@@ -622,6 +805,10 @@ researchHideBtn.addEventListener('click', hideResearchTable);
 pageNextBtn.addEventListener('click', displayNextPage);
 
 pagePreviousBtn.addEventListener('click', displayPreviousPage);
+
+pageNumberBtn.forEach((number) => {
+    number.addEventListener('click', (e) => displayClickedPage(e));
+});
 
 max.addEventListener('click', removeAlert);
 
