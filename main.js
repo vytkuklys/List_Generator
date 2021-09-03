@@ -16,7 +16,8 @@ const test = {
     "PerfectSquare": getPerfectSquareItems,
     "Palindrome": getPalindromeItems,
     "countPerfectSquare": countPerfectSquarePages,
-    "countPalindrome": countPalindromePages
+    "countPalindrome": countPalindromePages,
+    "countPrime": countPrimePages
 }
 
 const lazyLoad = target => {
@@ -151,8 +152,6 @@ const handleClickGenerateList = () => {
     const digits = getCheckedDigits();
     const range = getRangeOfDigits();
     if (isFormFilledCorrectly(sequence, digits, range)) {
-        // setStaticValue('data-printed', 0);
-        // setStaticValue('data-quota', 1);
         deleteCurrentList();
         handleList(sequence, digits, range);
         hidePagination();
@@ -165,6 +164,7 @@ const handlePagination = (sequence, digits, range) => {
     const PAGE = 248;
     const page_count = Math.ceil(getPagesCount(sequence, digits, range) / PAGE);
 
+    console.log(page_count);
     displayPagination(page_count);
 }
 
@@ -425,14 +425,14 @@ const getFactorial = (digit) => {
     }
 }
 
-function getPalindromeItems(digit, range = [], length) {
+function getPalindromeItems(digit, range = [], pushed = 0) {
     const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
     const result = [];
     const OPTIMIZE = getOptimalValues(digit);
     let counter = 0;
     counter = 0;
-    for (let i = MIN; i <= MAX && length + counter < 248; i++) {
+    for (let i = MIN; i <= MAX && pushed + counter < 248; i++) {
         if (parseFloat(
                 i
                 .toString()
@@ -442,7 +442,7 @@ function getPalindromeItems(digit, range = [], length) {
             ) === i) {
             result.push(i);
             counter++;
-            if (counter % OPTIMIZE[2] === 0) {
+            if(i % OPTIMIZE[2] >= OPTIMIZE[3]){
                 i -= OPTIMIZE[1];
             }
             i += OPTIMIZE[0];
@@ -454,9 +454,34 @@ function getPalindromeItems(digit, range = [], length) {
 function countPalindromePages(digit, range) {
     const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
-    const OPTIMIZE = getOptimalValues(digit);
+    const digits = (MAX + "").length;
+    const divisor = Math.pow(10, Math.floor(digits * 0.5));
+    /*Simple formula based on observations of palindrome patterns below*/
+    const pages = 
+        Math.floor(MAX / divisor) - Math.floor(MIN / divisor)
+        + isSecondNumberHalfBigger(MAX + "", digits - 1);
+    return pages;
+}
+
+const isSecondNumberHalfBigger = (num, digits) =>{
+    const half = Math.ceil(digits / 2)
+
+    for (let i = 0; digits >= half; i++, digits--){
+        if (parseInt(num[i]) > parseInt(num[digits])){
+            return 0;
+        }
+    }
+    return 1;
+}
+
+function getPalindromeItemsReversed(digit, range = [], length) {
+    const MIN = getMinValue(digit, range[0]);
+    const MAX = getMaxValue(digit, range[1]);
+    const result = [];
+    const OPTIMIZE = getOptimalValuesReversed(digit);
     let counter = 0;
-    for (let i = MIN; i <= MAX && counter < 992; i++) {
+    counter = 0;
+    for (let i = MAX; i >= (MIN == 1 ? 0 : MIN) && length + counter < 248; i--) {
         if (parseFloat(
                 i
                 .toString()
@@ -464,41 +489,16 @@ function countPalindromePages(digit, range) {
                 .reverse()
                 .join('')
             ) === i) {
+            result.push(i);
             counter++;
-            if (counter % OPTIMIZE[2] === 0) {
-                i -= OPTIMIZE[1];
+            if(i % OPTIMIZE[2] < OPTIMIZE[3]){
+                i += OPTIMIZE[1];
             }
-            i += OPTIMIZE[0];
+            i -= OPTIMIZE[0];
         }
     }
-    return counter;
+    return result;
 }
-
-// function getPalindromeItemsReversed(digit, range = [], length) {
-//     const MIN = getMinValue(digit, range[0]);
-//     const MAX = getMaxValue(digit, range[1]);
-//     const result = [];
-//     const OPTIMIZE = getOptimalValues(digit);
-//     let counter = 0;
-//     counter = 0;
-//     for (let i = MAX; i >= (MIN == 1 ? 0 : MIN) && length + counter < 248; i--) {
-//         if (parseFloat(
-//                 i
-//                 .toString()
-//                 .split('')
-//                 .reverse()
-//                 .join('')
-//             ) === i) {
-//             result.push(i);
-//             counter++;
-//             if (counter % OPTIMIZE[2] === 0) {
-//                 i -= OPTIMIZE[1];
-//             }
-//             i += OPTIMIZE[0];
-//         }
-//     }
-//     return result;
-// }
 
 
 const getOptimalValues = (digit) => {
@@ -506,27 +506,48 @@ const getOptimalValues = (digit) => {
         case 1:
         case 2:
         case 3:
-            return [0, 0, 1001]
+            return [0, 0, 100, 90]
         case 4:
-            return [99, 90, 10];
+            return [99, 90, 100, 90];
         case 5:
-            return [99, 90, 100];
+            return [99, 90, 1000, 900];
         case 6:
-            return [999, 990, 10];
         case 7:
-            return [999, 990, 100];
+            return [999, 990, 1000, 900];
         case 8:
-            return [9999, 9990, 10];
         case 9:
-            return [9999, 9990, 100];
+            return [9999, 9990, 100000, 90000];
         case 10:
-            return [99999, 99989, 10];
+            return [99999, 99989, 100000, 90000];
         default:
             break;
     }
 }
 
-function getPerfectSquareItems(digit, range, pushed) {
+const getOptimalValuesReversed = (digit) => {
+    switch (digit) {
+        case 1:
+        case 2:
+        case 3:
+            return [0, 0, 100, 10]
+        case 4:
+            return [99, 90, 100, 10];
+        case 5:
+            return [99, 90, 1000, 100];
+        case 6:
+        case 7:
+            return [999, 990, 1000, 100];
+        case 8:
+        case 9:
+            return [9999, 9990, 100000, 10000];
+        case 10:
+            return [99999, 99989, 100000, 10000];
+        default:
+            break;
+    }
+}
+
+function getPerfectSquareItems(digit, range, pushed = 0) {
     const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
     const PAGE = 248;
@@ -582,32 +603,75 @@ const setStaticValue = (data, printed) => {
     }
 }
 
-function getPrimeItems(digit, range) {
+function getPrimeItems(digit, range, length) {
     const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
-    const arr = [];
     const limit = Math.sqrt(MAX);
     const result = [];
+    const arr = new Array(MAX + 1);
     let counter = 0;
-    let i = 0;
-    for (let i = 0; i < MAX; i++) {
-        arr.push(true);
-    }
     for (let i = 2; i <= limit; i++) {
-        if (arr[i]) {
-            for (var j = i * i; j < MAX; j += i) {
-                arr[j] = false;
+        if (!arr[i]) {
+            for (var j = i * i; j <= MAX; j += i) {
+                arr[j] = true;
             }
         }
     }
-    for (let i = MIN; i < MAX && counter < 5000; i++) {
-        if (arr[i]) {
+    console.log(MAX)
+    for (let i = MIN; i <= MAX && length + counter < 248; i++) {
+        if (!arr[i]) {
             result.push(i);
             counter++;
         }
     }
     return result;
-};
+}
+
+function countPrimePages(digit, range) {
+    const MIN = getMinValue(digit, range[0]);
+    const MAX = getMaxValue(digit, range[1]);
+    const limit = Math.sqrt(MAX);
+    const result = [];
+    const arr = new Array(MAX);
+    let counter = 0;
+    for (let i = 2; i <= limit; i++) {
+        if (arr[i]) {
+            for (var j = i * i; j < MAX; j += i) {
+                arr[j] = true;
+            }
+        }
+    }
+    for (let i = MIN; i < MAX && counter < 992; i++) {
+        if (!arr[i]) {
+            counter++;
+        }
+    }
+    return counter;
+}
+
+function getPrimeItemsReversed(digit, range, length) {
+    const MIN = getMinValue(digit, range[0]);
+    const MAX = getMaxValue(digit, range[1]);
+    const limit = Math.sqrt(MAX);
+    const result = [];
+    const arr = new Array(MAX + 1);
+    let counter = 0;
+    let i = 0;
+    for (let i = 2; i <= limit; i++) {
+        if (!arr[i]) {
+            for (var j = i * i; j <= MAX; j += i) {
+                arr[j] = true;
+            }
+        }
+    }
+    for (let i = MAX; i >= MIN && length + counter < 248; i--) {
+        if (!arr[i]) {
+            result.push(i);
+            counter++;
+        }
+    }
+    return result;
+}
 
 const getStaticValues = (data) => {
     const value = document.querySelector(`[${data}]`).getAttribute(`${data}`);
@@ -637,6 +701,34 @@ const selectItem = e => {
         item.classList.add('selected');
         item.closest('.c-dropdown__select').querySelector('.c-dropdown__select-trigger span').textContent = item
             .textContent;
+    }
+    handleCheckboxVisibility();
+}
+
+const handleCheckboxVisibility = () =>{
+    const selected = document.querySelector('.selected').textContent;
+    const num8 = document.getElementById('8');
+    const num9 = document.getElementById('9');
+    const num10 = document.getElementById('10');
+    if (selected === 'Palindrome' || selected === 'Prime'){
+        if (num9.parentNode.classList.contains('h-pushed')){
+            handleCheckboxToggle(num9);
+        }
+        if (num10.parentNode.classList.contains('h-pushed')){
+            handleCheckboxToggle(num10);
+        }
+        if (selected == 'Prime'){
+            if (num8.parentNode.classList.contains('h-pushed')){
+                handleCheckboxToggle(num8);
+            }
+            num8.parentNode.classList.add('h-hide');
+        }
+        num9.parentNode.classList.add('h-hide');
+        num10.parentNode.classList.add('h-hide');
+    }
+    else{
+        num9.parentNode.classList.remove('h-hide');
+        num10.parentNode.classList.remove('h-hide');
     }
 }
 
@@ -691,8 +783,10 @@ const handleCheckboxToggle = (btn) => {
         })
     } else if (btn.id === "All" && isChecked === undefined) {
         checkboxDigits.forEach(check => {
-            check.parentNode.classList.add("h-pushed");
-            check.checked = true;
+            if(!check.parentNode.classList.contains('h-hide')){
+                check.parentNode.classList.add("h-pushed");
+                check.checked = true;
+            }
         })
     } else {
         btn.parentNode.classList.toggle("h-pushed");
@@ -764,6 +858,7 @@ const deleteResearchResults = () => {
 const isInSequence = (sequence, number) => {
     const range = [number, number];
     const digit = getDigitCount(number);
+    console.log(digit, range);
     return (window[`get${sequence}Items`](digit, range)[0] === number);
 }
 
@@ -822,3 +917,5 @@ function showChecked() {
         item.checked ? digits.push(parseInt(item.id)) : ""
     })
 }
+
+console.log(getPerfectSquareItems(3, [121, 121]));
