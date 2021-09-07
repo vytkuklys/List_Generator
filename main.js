@@ -9,8 +9,10 @@ const researchHideBtn = document.querySelector('.c-result__exit');
 const pageNextBtn = document.querySelector('.js-pagination__next');
 const pagePreviousBtn = document.querySelector('.js-pagination__previous');
 const pageNumberBtn = document.querySelectorAll('.js-pagination__page');
+const mobileOpenNavBtn = document.querySelector('.c-nav__btn-open');
+const mobileCloseNavBtn = document.querySelector('.c-nav__btn-close');
 
-const test = {
+const callbacks = {
     "Catalan": getCatalanItems,
     "Fibonacci": getFibonacciItems,
     "PerfectSquare": getPerfectSquareItems,
@@ -18,24 +20,6 @@ const test = {
     "countPerfectSquare": countPerfectSquarePages,
     "countPalindrome": countPalindromePages,
     "countPrime": countPrimePages
-}
-
-const lazyLoad = target => {
-    const io = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-
-            if (entry.isIntersecting) {
-                const QUOTA = Number(getStaticValues('data-quota')) + 1;
-                const MIN = Number(entry.target.textContent);
-                const data = getFormData();
-                const range = getRange(data[2], MIN + 1);
-                setStaticValue('data-quota', QUOTA);
-                handleList(data[0], data[1], range);
-                observer.disconnect();
-            }
-        })
-    });
-    io.observe(target);
 }
 
 const displayNextPage = () => {
@@ -50,9 +34,11 @@ const displayNextPage = () => {
     handleList(data[0], data[1], range);
     current = parseInt(current) % 4;
     if (current == LAST) {
+        console.log(current, data, range);
         changePaginationNumbers(4);
     }
     changeSelectedPageTo(current);
+    console.log('display');
 }
 
 const refreshPagination = () => {
@@ -62,11 +48,17 @@ const refreshPagination = () => {
     const range = getRange(parseInt(MIN) + 1, getRangeOfDigits()[1]);
     const PAGE = 248;
     const pages = Math.ceil(getPagesCount(sequence, digits, range) / PAGE);
-    if (pages === 0) {
+    if (pages <= 0) {
         return 0;
     }
     hidePagination();
-    handlePagination(sequence, digits, range);
+    if (doesSequenceNeedPagination(sequence)){
+        handlePagination(sequence, digits, range);
+    }
+}
+
+const doesSequenceNeedPagination = sequence =>{
+    return !(sequence === 'Fibonacci' || sequence === 'Catalan');
 }
 
 const displayPreviousPage = () => {
@@ -126,11 +118,6 @@ const getFormData = () => {
     return [sequence, digits, range];
 }
 
-const updateQuota = (num) => {
-    const QUOTA = Number(getStaticValues('data-quota')) + num;
-    setStaticValue('data-quota', QUOTA);
-}
-
 const changeSelectedPageTo = (current) => {
     const pages = document.querySelectorAll('.js-pagination__page');
     let i = 0;
@@ -156,7 +143,9 @@ const handleClickGenerateList = () => {
         handleList(sequence, digits, range);
         hidePagination();
         refreshPaginationNumbers();
-        handlePagination(sequence, digits, range);
+        if (doesSequenceNeedPagination(sequence)){
+            handlePagination(sequence, digits, range);
+        }
     }
 }
 
@@ -164,7 +153,6 @@ const handlePagination = (sequence, digits, range) => {
     const PAGE = 248;
     const page_count = Math.ceil(getPagesCount(sequence, digits, range) / PAGE);
 
-    console.log(page_count);
     displayPagination(page_count);
 }
 
@@ -212,9 +200,9 @@ const getPagesCount = (sequence, digits, range) => {
             return;
         }
         if (isArrayEmpty(digits)) {
-            counter += test[`count${sequence}`](1, range);
+            counter += callbacks[`count${sequence}`](1, range);
         } else {
-            counter += test[`count${sequence}`](digits, range);
+            counter += callbacks[`count${sequence}`](digits, range);
         }
     });
     return counter;
@@ -305,8 +293,10 @@ function handleReversedList(sequence, digits, range) {
     while (length-- > 0) {
         if (isArrayEmpty(digits[length])) {
             result.push(...window[`get${sequence}ItemsReversed`](1, range, result.length));
-        } else {
+        } else if (digits.length){
             result.push(...window[`get${sequence}ItemsReversed`](digits[length], range, result.length));
+        } else{
+            result.push(...window[`get${sequence}ItemsReversed`](length + 1, range, result.length));
         }
     }
     arr = reverseArr(result);
@@ -352,9 +342,6 @@ const renderList = (result) => {
         const span = document.createElement('span');
         span.textContent = `${result[i]}`;
         output.appendChild(span);
-    }
-    if (SIZE >= 3000) {
-        lazyLoad(output.lastChild);
     }
     main.appendChild(output);
 }
@@ -475,12 +462,13 @@ const isSecondNumberHalfBigger = (num, digits) =>{
 }
 
 function getPalindromeItemsReversed(digit, range = [], length) {
-    const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
+    const MIN = getMinValue(digit, range[0]);
     const result = [];
     const OPTIMIZE = getOptimalValuesReversed(digit);
     let counter = 0;
     counter = 0;
+
     for (let i = MAX; i >= (MIN == 1 ? 0 : MIN) && length + counter < 248; i--) {
         if (parseFloat(
                 i
@@ -617,7 +605,6 @@ function getPrimeItems(digit, range, length) {
             }
         }
     }
-    console.log(MAX)
     for (let i = MIN; i <= MAX && length + counter < 248; i++) {
         if (!arr[i]) {
             result.push(i);
@@ -631,11 +618,11 @@ function countPrimePages(digit, range) {
     const MIN = getMinValue(digit, range[0]);
     const MAX = getMaxValue(digit, range[1]);
     const limit = Math.sqrt(MAX);
-    const result = [];
     const arr = new Array(MAX);
     let counter = 0;
+    console.log(digit, range, MAX, limit);
     for (let i = 2; i <= limit; i++) {
-        if (arr[i]) {
+        if (!arr[i]) {
             for (var j = i * i; j < MAX; j += i) {
                 arr[j] = true;
             }
@@ -644,8 +631,10 @@ function countPrimePages(digit, range) {
     for (let i = MIN; i < MAX && counter < 992; i++) {
         if (!arr[i]) {
             counter++;
+            console.log(i);
         }
     }
+    console.log(counter);
     return counter;
 }
 
@@ -671,14 +660,6 @@ function getPrimeItemsReversed(digit, range, length) {
         }
     }
     return result;
-}
-
-const getStaticValues = (data) => {
-    const value = document.querySelector(`[${data}]`).getAttribute(`${data}`);
-    if (Number(value)) {
-        return value;
-    }
-    return 0;
 }
 
 const toggleSelectMenu = () => {
@@ -717,11 +698,14 @@ const handleCheckboxVisibility = () =>{
         if (num10.parentNode.classList.contains('h-pushed')){
             handleCheckboxToggle(num10);
         }
-        if (selected == 'Prime'){
+        if (selected === 'Prime'){
             if (num8.parentNode.classList.contains('h-pushed')){
                 handleCheckboxToggle(num8);
             }
             num8.parentNode.classList.add('h-hide');
+        }
+        if (selected === 'Palindrome'){
+            num8.parentNode.classList.remove('h-hide');
         }
         num9.parentNode.classList.add('h-hide');
         num10.parentNode.classList.add('h-hide');
@@ -750,6 +734,7 @@ const getRangeDigits = (range) => {
 }
 
 const getDigitCount = (digit) => {
+    if (digit === 0) return 1;
     let count = 0;
     while (digit > 0) {
         count++;
@@ -759,11 +744,17 @@ const getDigitCount = (digit) => {
 }
 
 const getMaxValue = (digits, max = 0) => {
+    if(!digits){
+        digits = getDigitCount(max);
+    }
     const limit = Math.pow(10, digits);
     return max === 0 ? limit - 1 : limit > max ? max : limit - 1;
 }
 
 const getMinValue = (digits, min = 0) => {
+    if (!digits){
+        digits = getDigitCount(min);
+    }
     const start = Math.pow(10, digits - 1);
     return min === 0 && digits == 1 ? min : start < min ? min : start;
 }
@@ -790,6 +781,9 @@ const handleCheckboxToggle = (btn) => {
         })
     } else {
         btn.parentNode.classList.toggle("h-pushed");
+        if (!btn.parentNode.classList.contains("h-pushed") && btn.checked){
+            btn.checked = false;
+        }
     }
     removeAlert();
 }
@@ -858,7 +852,6 @@ const deleteResearchResults = () => {
 const isInSequence = (sequence, number) => {
     const range = [number, number];
     const digit = getDigitCount(number);
-    console.log(digit, range);
     return (window[`get${sequence}Items`](digit, range)[0] === number);
 }
 
@@ -873,6 +866,16 @@ const renderBlur = () => {
 const removeBlur = () => {
     const blur = document.querySelector('.blur__JS');
     blur.parentNode.removeChild(blur);
+}
+
+const toggleMobileNav = () =>{
+    const nav = document.querySelector('.c-nav__items');
+    const body = document.body;
+    const btns = document.querySelector('.c-nav__btns');
+
+    nav.classList.toggle('js-open');
+    body.classList.toggle('h-overflow');
+    btns.classList.toggle('js-btns');
 }
 
 submitBtn.addEventListener('click', (e) => {
@@ -905,6 +908,10 @@ pageNumberBtn.forEach((number) => {
     number.addEventListener('click', (e) => displayClickedPage(e));
 });
 
+mobileOpenNavBtn.addEventListener('click', toggleMobileNav);
+
+mobileCloseNavBtn.addEventListener('click', toggleMobileNav);
+
 max.addEventListener('click', removeAlert);
 
 window.addEventListener('click', e => handleWindowClick(e));
@@ -917,5 +924,3 @@ function showChecked() {
         item.checked ? digits.push(parseInt(item.id)) : ""
     })
 }
-
-console.log(getPerfectSquareItems(3, [121, 121]));

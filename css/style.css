@@ -16,6 +16,7 @@ html, body{
 body {
     font-family: 'Montserrat', sans-serif;
     width: 100%;
+    overflow-x: hidden;
 }
 
 main {
@@ -302,26 +303,20 @@ header {
     justify-content: space-between;
     align-items: center;
     background-color: #9c27b0;
-    padding: 0 7.5%;
     font-size: 17px;
+    position: relative;
 }
 
-.c-nav,
 .c-nav__items,
 header {
     display: flex;
-}
-
-.c-nav {
-    width: fit-content;
-    width: 40%;
-    justify-content: flex-end;
 }
 
 .c-nav__items {
     justify-content: space-between;
     align-items: center;
     text-align: center;
+    padding: 0 7.5% 0 0;
 }
 
 .c-nav__item {
@@ -342,7 +337,7 @@ header {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    border: 1px solid #ffffffb3;
+    border: 2px solid #ffffffb3;
     display: none;
 }
 
@@ -357,6 +352,7 @@ header {
     margin-left: 2.5%;
     position: relative;
     z-index: 11;
+    padding-left: .35rem;
 }
 
 .c-search__input {
@@ -375,6 +371,8 @@ header {
 }
 .c-search__btn i{
     color: #fff;
+    color: rgba(255, 255, 255, 0.836);
+
     font-size: 1rem;
 }
 
@@ -395,14 +393,7 @@ header {
 .c-logo__wrapper {
     display: flex;
     align-items: center;
-}
-
-.c-logo__text {
-    font-weight: 600;
-    color: #ffffff;
-    font-size: 18px;
-    white-space: nowrap;
-    margin-left: calc(.675rem + 2.5%);
+    padding: 0 0 0 7.5%;
 }
 
 .c-logo__infinity {
@@ -435,7 +426,7 @@ header {
 }
 
 .l-padding {
-    padding: 0 .675rem 0 .675rem;
+    padding: 0 0 0 .8rem;
 }
 
 .h-border-bottom {
@@ -735,6 +726,10 @@ header {
     z-index: 10;
     background-color: #e0e0e0ab;
 
+}
+
+.h-overflow{
+    overflow-y: hidden;
 }
 
 @supports ((-webkit-backdrop-filter: blur(.25rem)) or (backdrop-filter: blur(.25rem))) {

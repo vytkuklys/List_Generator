@@ -1,0 +1,121 @@
+.c-nav {
+    position: relative;
+    height: 100%;
+}
+
+.c-nav__btns {
+    position: absolute;
+    display: none;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 7.5%;
+}
+
+.c-nav__btn {
+    position: absolute;
+    background-color: transparent;
+    border: none;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1.5rem;
+    cursor: pointer;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 7.5%;
+    transition: opacity .4s ease-in-out;
+}
+
+.c-nav__btn i {
+    color: #ffffff;
+}
+
+.c-nav__btn-close {
+    visibility: hidden;
+    opacity: 0;
+    right: calc(7.5% + 1rem);
+}
+
+.c-nav__btn-open{
+    opacity: 1;
+}
+
+.js-btns .c-nav__btn-close {
+    visibility: visible;
+    opacity: 1;
+}
+
+.js-btns .c-nav__btn-open{
+    visibility: hidden;
+}
+
+@media only screen and (max-width: 725px) {
+    .c-nav__btns {
+        display: block;
+    }
+
+    .c-nav__items {
+        border-radius: .25rem;
+        transform: translateX(100%);
+        visibility: hidden;
+    }
+
+    .c-nav__items> :first-child {
+        border-radius: .75rem .75rem 0 0;
+    }
+
+    .c-nav__items> :last-child {
+        border-radius: 0 0 .75rem .75rem;
+    }
+
+    .c-logo__wrapper {
+        justify-content: flex-start;
+    }
+
+    .c-nav__item {
+        color: #333333;
+        background-color: #ffffff;
+        padding: 1.25rem;
+        line-height: initial;
+        height: initial;
+        width: 100%;
+        text-align: center;
+        font-weight: bold;
+        border-top: 1px solid #3cb027;
+    }
+
+    .c-nav__item::after {
+        border: none;
+    }
+
+    .c-nav__item:hover {
+        cursor: pointer;
+        background-color: #3cb027;
+        color: #ffffff;
+    }
+
+    .js-open {
+        transform: translateX(0);
+        visibility: visible;
+        position: fixed;
+        z-index: 50;
+        width: 100%;
+        display: flex;
+        top: 3.5rem;
+        flex-direction: column;
+        background-color: #f0e1f3;
+        padding: 3.5rem 7.5% 0;
+        height: calc(100vh - 3.5rem);
+        justify-content: flex-start;
+        font-size: 1.35rem;
+        text-transform: lowercase;
+        transition: transform .4s ease-in-out;
+    }
+
+    .l-padding {
+        padding: 1.25rem;
+    }
+
+    .h-border-bottom {
+        border: none;
+    }
+}
