@@ -8,15 +8,17 @@
     margin: 0;
 }
 
-html, body{
+html,
+body {
     height: 100%;
     scroll-behavior: smooth;
+    overflow-x: hidden;
+
 }
 
 body {
     font-family: 'Montserrat', sans-serif;
     width: 100%;
-    overflow-x: hidden;
 }
 
 main {
@@ -25,42 +27,42 @@ main {
     min-height: calc(100% - 106px - 5%);
 }
 
-footer{
+footer {
     text-align: center;
     padding-bottom: .25rem;
     margin-top: 2.5%;
 }
 
-footer a{
+footer a {
     text-decoration: none;
     color: #222222;
 }
 
-footer a i{
+footer a i {
     margin-right: .75rem;
     color: #9c27b0;
 }
 
-footer a:hover{
+footer a:hover {
     color: #9c27b0;
 }
 
-footer hr{
+footer hr {
     margin-bottom: 1rem;
     background-color: #9c27b0;
-    height: 1px; 
-    border: 0; 
+    height: 1px;
+    border: 0;
 }
 
-footer p{
+footer p {
     font-size: .65rem;
     margin: .75rem 0 0;
 }
 
-a{
+a {
     text-decoration: none;
     color: #ffffff;
-    
+
 }
 
 button,
@@ -73,7 +75,7 @@ input {
     position: relative;
     user-select: none;
     width: 100%;
-    min-width: 275px;
+    min-width: 235px;
     margin: 0 auto;
     text-align: left;
 }
@@ -106,9 +108,10 @@ input {
     right: .5rem;
     bottom: -3.5rem;
     display: none;
+    border-radius: .25rem;
 }
 
-.c-dropdown__select-trigger::before{
+.c-dropdown__select-trigger::before {
     content: '';
     right: 1.9rem;
     bottom: -1.1rem;
@@ -210,7 +213,7 @@ input[type="checkbox"] {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 0 0 1%;
+    margin: 0 1% 0 0;
     cursor: pointer;
     border-radius: .25rem;
     font-size: 1.1rem;
@@ -255,22 +258,28 @@ input[type="checkbox"] {
     font-size: 1.1rem;
     font-weight: bold;
     position: relative;
+    flex-wrap: wrap;
 }
 
-.c-digits__wrapper::after{
+.c-digits__wrapper::after {
     content: 'Please Select Digit count or min/max';
     bottom: -3rem;
     left: 550px;
     display: none;
+    border-radius: .25rem;
 }
 
-.c-pagination__wrapper{
+.c-digits__wrapper>p {
+    margin: 0 1% 0 0;
+}
+
+.c-pagination__wrapper {
     padding: 0 7.5% 1%;
     align-items: center;
     justify-content: center;
 }
 
-.c-pagination__btn{
+.c-pagination__btn {
     margin: 0 0 0 .5%;
     background-color: transparent;
     width: 2.75rem;
@@ -279,7 +288,7 @@ input[type="checkbox"] {
     border-color: #3BB027;
 }
 
-.c-pagination__btn:hover{
+.c-pagination__btn:hover {
     background-color: #3BB027;
     border-color: #3BB027;
     color: #ffffff;
@@ -287,7 +296,7 @@ input[type="checkbox"] {
 }
 
 .c-pagination__wrapper button:first-child,
-.c-pagination__wrapper button:last-of-type{
+.c-pagination__wrapper button:last-of-type {
     width: 3.25rem;
 }
 
@@ -346,7 +355,7 @@ header {
 }
 
 .c-search {
-    width: 12rem;
+    width: 10.5rem;
     border-radius: 1rem;
     align-self: center;
     margin-left: 2.5%;
@@ -366,17 +375,18 @@ header {
     text-align: center;
 }
 
-.c-search__input::placeholder{
+.c-search__input::placeholder {
     color: rgba(255, 255, 255, 0.836);
 }
-.c-search__btn i{
+
+.c-search__btn i {
     color: #fff;
     color: rgba(255, 255, 255, 0.836);
 
     font-size: 1rem;
 }
 
-.c-search__btn{
+.c-search__btn {
     background-color: transparent;
     border: none;
     position: absolute;
@@ -386,7 +396,7 @@ header {
     cursor: pointer;
 }
 
-.c-search__btn:hover i{
+.c-search__btn:hover i {
     color: #3BB027;
 }
 
@@ -452,12 +462,12 @@ header {
     position: absolute;
     right: 0;
 }
- 
-.c-generate-btn:hover{
+
+.c-generate-btn:hover {
     background-color: #1fb903;
 }
 
-.c-generate-btn:active{
+.c-generate-btn:active {
     transform: scale(.995);
 
 }
@@ -471,66 +481,59 @@ header {
     text-align: left;
     font-size: 17.6px;
     font-weight: bold;
-    height: 52px;
     position: relative;
 }
 
 .c-form__input-field {
-    height: 100%;
+    height: 52px;
     width: 7.5rem;
     border: 1px solid #9c27b0;
     border-radius: .25rem;
     text-align: center;
     font-size: 1.1rem;
     font-weight: bold;
-    margin: 0 1%;
+    margin: 0 1% 0 0;
     outline-color: #3BB027;
 }
 
-.c-form__input-wrapper::after{
+.c-form__input-label {
+    margin: 0 1% 0 0;
+}
+
+.c-form__input-wrapper::after {
     content: 'Please Enter A Valid Max Value';
     left: 550px;
     top: .25rem;
     display: none;
+    border-radius: .25rem;
 }
 
-.c-form__input-wrapper::before{
+.c-form__input-wrapper::before {
     content: '';
     top: 1.25rem;
     left: 545px;
     display: none;
 }
 
-.c-output{
+.c-output {
     font-size: 1.45rem;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     margin: -2.5% 0 1%;
 }
 
-.c-output span{
+.c-output span {
     background-color: #F4FBF4;
     padding: .85rem 0;
     text-indent: 1rem;
     color: #222222;
 }
 
-.c-output span:nth-child(2n){
-    filter: brightness(98%);
-}
-.c-output span:nth-child(16n + 1),
-.c-output span:nth-child(16n + 2),
-.c-output span:nth-child(16n + 3),
-.c-output span:nth-child(16n + 4),
-.c-output span:nth-child(16n + 5),
-.c-output span:nth-child(16n + 6),
-.c-output span:nth-child(16n + 7),
-.c-output span:nth-child(16n + 8)
-{
-    background-color: #CFEEC9;
+.c-output span:nth-child(2n) {
+    filter: brightness(99%);
 }
 
-.c-list__title{
+.c-list__title {
     padding: 3.5rem 0 2rem;
     margin-bottom: 2.5%;
     font-size: 1.75rem;
@@ -539,7 +542,7 @@ header {
     text-transform: capitalize;
 }
 
-.c-list__info{
+.c-list__info {
     text-transform: capitalize;
 }
 
@@ -547,7 +550,7 @@ header {
     border-color: red;
 }
 
-.h-alert::before{
+.h-alert::before {
     background-color: red;
     padding: .3rem;
     position: absolute;
@@ -557,7 +560,7 @@ header {
     display: block;
 }
 
-.h-alert::after{
+.h-alert::after {
     position: absolute;
     color: red;
     border-radius: .25rem;
@@ -573,11 +576,11 @@ header {
     display: block;
 }
 
-.h-hide{
+.h-hide {
     display: none;
 }
 
-.h-active{
+.h-active {
     background-color: #3BB027;
     color: #ffffff;
 }
@@ -605,41 +608,41 @@ header {
     }
 }
 
-.c-about__title{
+.c-about__title {
     font-size: 2.5rem;
     font-weight: bold;
     padding: 2.5% 0;
     text-align: center;
 }
 
-.c-about__main{
+.c-about__main {
     font-size: 1.25rem;
     line-height: 1.5;
 }
 
-.c-about__list{
+.c-about__list {
     list-style: decimal;
     padding: 1% 2.5%;
     max-width: 1000px;
     margin: 0 auto;
 }
 
-.c-about__info{
+.c-about__info {
     padding-top: 2.5%;
     max-width: 1100px;
     margin: 0 auto;
 }
 
-.c-contact__email{
+.c-contact__email {
     color: #3BB027;
     text-decoration: underline;
 }
 
-.c-contact__main{
+.c-contact__main {
     text-align: center;
 }
 
-.c-result{
+.c-result {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -654,7 +657,7 @@ header {
     box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
 }
 
-.c-result__header{
+.c-result__header {
     background-color: #9c27b0;
     border-radius: .25rem .25rem 0 0;
     padding: .75rem .75rem;
@@ -662,7 +665,7 @@ header {
     margin: -.5rem;
 }
 
-.c-result__exit{
+.c-result__exit {
     background-color: transparent;
     border: none;
     color: #ffffff;
@@ -671,16 +674,16 @@ header {
     cursor: pointer;
 }
 
-.c-result__exit:hover{
+.c-result__exit:hover {
     color: tomato;
 }
 
-.c-result__exit:active{
+.c-result__exit:active {
     color: rgb(253, 66, 33);
     transform: scale(95%);
 }
 
-.c-result__title{
+.c-result__title {
     color: #3BB027;
     font-weight: bold;
     font-size: 3.5rem;
@@ -688,7 +691,7 @@ header {
     padding: 1.5rem 0 1rem;
 }
 
-.c-result__item{
+.c-result__item {
     border-bottom: .5px solid rgb(192, 185, 185);
     padding: .5rem 0;
     display: flex;
@@ -697,23 +700,23 @@ header {
     font-size: 1.1rem;
 }
 
-.c-result__items{
+.c-result__items {
     border-top: .5px solid rgb(192, 185, 185);
 }
 
-.c-result__item:last-child{
+.c-result__item:last-child {
     border-bottom: none;
 }
 
-.c-result__item i{
+.c-result__item i {
     font-size: 1.75rem;
 }
 
-.fa-check-circle{
+.fa-check-circle {
     color: rgb(10, 255, 10);
 }
 
-.fa-times-circle{
+.fa-times-circle {
     color: red;
 }
 
@@ -728,7 +731,7 @@ header {
 
 }
 
-.h-overflow{
+.h-overflow {
     overflow-y: hidden;
 }
 
@@ -737,5 +740,203 @@ header {
         background-color: rgba(255, 255, 255, .15);
         -webkit-backdrop-filter: blur(.25rem);
         backdrop-filter: blur(.25rem);
+    }
+}
+
+@media only screen and (min-width: 1530px) {
+
+    .c-output span:nth-child(16n + 1),
+    .c-output span:nth-child(16n + 2),
+    .c-output span:nth-child(16n + 3),
+    .c-output span:nth-child(16n + 4),
+    .c-output span:nth-child(16n + 5),
+    .c-output span:nth-child(16n + 6),
+    .c-output span:nth-child(16n + 7),
+    .c-output span:nth-child(16n + 8) {
+        background-color: #CFEEC9;
+    }
+}
+
+@media only screen and (min-width: 1175px) and (max-width: 1530px) {
+    .c-output {
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    }
+
+    .c-output span:nth-child(12n + 1),
+    .c-output span:nth-child(12n + 2),
+    .c-output span:nth-child(12n + 3),
+    .c-output span:nth-child(12n + 4),
+    .c-output span:nth-child(12n + 5),
+    .c-output span:nth-child(12n + 6) {
+        background-color: #CFEEC9;
+    }
+}
+
+@media only screen and (max-width: 1225px) {
+    .c-digits__wrapper {
+        padding: 3.5% 0 1.75%;
+    }
+
+    .c-digits__wrapper>p {
+        flex: 0 0 100%;
+        text-align: left;
+        padding-bottom: 1.75%;
+    }
+
+    .c-digits__btn {
+        margin: 0 1.75% 1.75% 0;
+    }
+
+    .c-form__input-wrapper label:first-child {
+        display: block;
+        padding-bottom: 1.75%;
+    }
+
+    .c-digits__wrapper::after {
+        bottom: -1.75rem;
+        left: 330px;
+    }
+
+    .c-form__input-wrapper::after {
+        left: 330px;
+        top: calc(2.5rem - 1.75%);
+    }
+
+    .c-form__input-wrapper::before {
+        top: calc(3.5rem - 1.75%);
+        left: 325px;
+    }
+}
+
+@media only screen and (min-width: 975px) and (max-width: 1175px) {
+    .c-output {
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    }
+
+    .c-output span:nth-child(10n + 1),
+    .c-output span:nth-child(10n + 2),
+    .c-output span:nth-child(10n + 3),
+    .c-output span:nth-child(10n + 4),
+    .c-output span:nth-child(10n + 5) {
+        background-color: #CFEEC9;
+    }
+}
+
+@media only screen and (max-width: 920px) {
+    .c-digits__wrapper {
+        padding: 5% 0 3.25%;
+    }
+
+    .c-digits__wrapper>p {
+        padding-bottom: 2.5%;
+    }
+
+    .c-form__input-wrapper label:first-child {
+        display: block;
+        padding-bottom: 2.5%;
+    }
+
+    .c-generate-btn {
+        padding: 0 1rem;
+        top: 125%;
+        left: initial;
+    }
+
+    .c-list__title {
+        padding: 6rem 0 1.5rem;
+        font-size: clamp(1.1rem, 3vw, 2rem);
+    }
+
+    .c-output {
+        margin-bottom: 2.5%;
+    }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 975px) {
+    .c-output {
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+    }
+
+    .c-output span:nth-child(8n + 1),
+    .c-output span:nth-child(8n + 2),
+    .c-output span:nth-child(8n + 3),
+    .c-output span:nth-child(8n + 4) {
+        background-color: #CFEEC9;
+    }
+}
+
+@media only screen and (max-width: 786px) {
+    .c-digits__wrapper::after {
+        bottom: -1.75rem;
+        left: 0;
+    }
+
+    .c-dropdown__select-trigger::after,
+    .c-digits__wrapper::after,
+    .c-form__input-wrapper::after {
+        font-size: clamp(.55rem, 2vw, .9rem);
+    }
+
+    .c-dropdown__select-trigger {
+        font-size: clamp(1rem, 3.5vw, 17.6px);
+    }
+
+    .c-form__input-wrapper::after {
+        left: 0;
+        top: -.9rem;
+    }
+
+    .c-form__input-wrapper::before {
+        left: 11.5rem;
+        top: 1.4rem;
+    }
+
+    .c-digits__wrapper>p,
+    .c-form__input-wrapper label:first-child {
+        padding-bottom: 3%;
+    }
+}
+
+@media only screen and (min-width: 575px) and (max-width: 768px) {
+    .c-output {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .c-output span:nth-child(6n + 1),
+    .c-output span:nth-child(6n + 2),
+    .c-output span:nth-child(6n + 3) {
+        background-color: #CFEEC9;
+    }
+}
+
+@media only screen and (max-width: 575px) {
+    .c-output {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .c-output span:nth-child(2n + 1) {
+        background-color: #CFEEC9;
+    }
+
+    .c-form {
+        padding: 1rem 0 0;
+    }
+
+    .c-digits__wrapper>p,
+    .c-form__input-wrapper label:first-child {
+        padding-bottom: 4.5%;
+    }
+
+    .c-digits__wrapper {
+        padding: 7% 0 5.25%;
+    }
+
+    .c-search {
+        width: 9.75rem;
+    }
+
+    main {
+        padding: 0 5%;
     }
 }

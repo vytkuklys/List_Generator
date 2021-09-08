@@ -12,12 +12,12 @@
 </head>
 
 <body>
-  <header>
+  <header id="top">
     <div class="c-logo__wrapper">
       <div class="c-logo__infinity"></div>
       <div class="c-search">
         <input class="c-search__input" type="text" onkeyup="this.value=this.value.replace(/[^\d]+/,'')"
-          placeholder="Research a number">
+          placeholder="Enter Number">
         <button class="c-search__btn"><i class="fas fa-search"></i></button>
       </div>
     </div>
@@ -49,7 +49,7 @@
       </div>
 
       <div class="c-digits__wrapper">
-        <p>Choose digit count</p>
+        <p>Choose digit count: </p>
         <label for="1" class="c-digits__btn">
           <input type="checkbox" class="js-digits__check" id="1">
           1
@@ -188,7 +188,7 @@
   </div>
   <footer>
     <hr>
-    <a href="#"><i class="fas fa-arrow-up"></i>Back to top</a>
+    <a href="#top"><i class="fas fa-arrow-up"></i>Back to top</a>
     <p>© Copyright 2021 All Rights Reserved</p>
   </footer>
   <script src="main.js"></script>
