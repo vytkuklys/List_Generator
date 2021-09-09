@@ -13,7 +13,7 @@ body {
     height: 100%;
     scroll-behavior: smooth;
     overflow-x: hidden;
-
+    /* min-height: 100vh; */
 }
 
 body {
@@ -30,7 +30,6 @@ main {
 footer {
     text-align: center;
     padding-bottom: .25rem;
-    margin-top: 2.5%;
 }
 
 footer a {
@@ -329,7 +328,6 @@ header {
 }
 
 .c-nav__item {
-    padding: 0 1.25rem 0;
     cursor: pointer;
     color: #ffffff;
     height: 3.5rem;
@@ -337,6 +335,14 @@ header {
     white-space: nowrap;
     position: relative;
     text-align: center;
+}
+
+.c-nav__link {
+    min-width: 100%;
+    height: 100%;
+    display: block;
+    padding: 0 1.25rem 0;
+
 }
 
 .c-nav__item::after {
@@ -608,6 +614,7 @@ header {
     }
 }
 
+.c-contact__title,
 .c-about__title {
     font-size: 2.5rem;
     font-weight: bold;
@@ -627,15 +634,37 @@ header {
     margin: 0 auto;
 }
 
+.c-contact__info,
 .c-about__info {
     padding-top: 2.5%;
     max-width: 1100px;
     margin: 0 auto;
+    text-align: justify;
+    line-height: 1.75;
+}
+
+.c-about__link {
+    color: #3BB027;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+ol {
+    text-align: left;
+    line-height: .5;
+
+}
+
+.c-contact__info {
+    line-height: 1.5;
+    font-size: 1.15rem;
 }
 
 .c-contact__email {
     color: #3BB027;
     text-decoration: underline;
+    text-align: center;
+    font-size: 1.25rem !important;
 }
 
 .c-contact__main {
@@ -895,6 +924,21 @@ header {
     .c-form__input-wrapper label:first-child {
         padding-bottom: 3%;
     }
+
+    .c-about__list,
+    .c-contact__info,
+    .c-about__info {
+        font-size: clamp(1rem, 1.25vw, 1.25rem);
+    }
+
+    ol {
+        padding: 0 10%;
+
+    }
+
+    .c-about__list {
+        line-height: 1.5;
+    }
 }
 
 @media only screen and (min-width: 575px) and (max-width: 768px) {
@@ -939,4 +983,11 @@ header {
     main {
         padding: 0 5%;
     }
+    .c-contact__title{
+        padding: 15% 0 10%;
+    }
+}
+
+.c-contact__footer p {
+    margin-top: 1.75rem;
 }

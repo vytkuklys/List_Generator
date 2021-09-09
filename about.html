@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="description" content="Sequence Generator" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/85a9462cb0.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="./css/reset.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" href="./css/nav.css">
+  <title>Generator of Sequences | About</title>
+</head>
+
+<body>
+  <header id="top">
+    <div class="c-logo__wrapper">
+      <div class="c-logo__infinity"></div>
+      <div class="c-search">
+        <input class="c-search__input" type="text" onkeyup="this.value=this.value.replace(/[^\d]+/,'')"
+          placeholder="Enter Number">
+        <button class="c-search__btn" aria-label="Search Results"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+    <ul class="c-nav__items">
+      <li class="c-nav__item"><a class="c-nav__link" href="index.html">Home</a></li>
+      <li class="c-nav__item h-border-bottom"><a class="c-nav__link" href="#">About</a></li>
+      <li class="c-nav__item"><a class="c-nav__link l-padding" href="contact.html">Contact Us</a></li>
+    </ul>
+    <div class="c-nav__btns">
+      <button class="c-nav__btn c-nav__btn-close" onfocus="blur()" aria-label="close">X</button>
+      <button class="c-nav__btn c-nav__btn-open" onfocus="blur()" aria-label="open"><i class="fas fa-bars"></i></button>
+    </div>
+  </header>
+  <main class="c-about__main">
+      <h1 class="c-about__title">About</h1>
+      <p class="c-about__info">Sequece Generator allows you to easily generate lists of items based on your personal needs and preferences. Here you can generate lists of the following sequences: Catalan, Fibonacci, Palindrome, Perfect Square and Prime. These, in turn, can be filtered by two criteria: </p>
+      <ol>
+          <li class="c-about__list">Digit count (differs based on a sequence).</li>
+          <li class="c-about__list">Minimum and maximum values.</li>
+      </ol>
+      <p class="c-about__info">For any questions you can find our contact information in the <a class="c-about__link" href="contact.html">contact page.</a></p>
+  </main>
+  <div class="c-result h-hide">
+    <div class="c-result__header">
+      <button class="c-result__exit" aria-label="Close Results">X</button>
+    </div>
+    <p class="c-result__title"></p>
+    <ul class="c-result__items">
+      <li class="c-result__item js-catalan">Catalan: </li>
+      <li class="c-result__item js-fibonacci">Fibonacci: </li>
+      <li class="c-result__item js-palindrome">Palindrome: </li>
+      <li class="c-result__item js-perfect-square">Perfect Square: </li>
+    </ul>
+  </div>
+  <footer class="c-contact__footer">
+    <hr>
+    <p>© Copyright 2021 All Rights Reserved</p>
+  </footer>
+  <script src="./js/index.js"></script>
+</body>
+
+</html>

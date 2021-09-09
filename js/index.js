@@ -1,14 +1,7 @@
 'use strict';
 
-const submitBtn = document.querySelector(".submit");
-const selectToggler = document.querySelector('.c-dropdown');
-const selectOptions = document.querySelectorAll(".c-dropdown__option");
-const checkboxDigits = document.querySelectorAll(".js-digits__check");
 const researchNumberBtn = document.querySelector('.c-search__btn');
 const researchHideBtn = document.querySelector('.c-result__exit');
-const pageNextBtn = document.querySelector('.js-pagination__next');
-const pagePreviousBtn = document.querySelector('.js-pagination__previous');
-const pageNumberBtn = document.querySelectorAll('.js-pagination__page');
 const mobileOpenNavBtn = document.querySelector('.c-nav__btn-open');
 const mobileCloseNavBtn = document.querySelector('.c-nav__btn-close');
 
@@ -34,11 +27,9 @@ const displayNextPage = () => {
     handleList(data[0], data[1], range);
     current = parseInt(current) % 4;
     if (current == LAST) {
-        console.log(current, data, range);
         changePaginationNumbers(4);
     }
     changeSelectedPageTo(current);
-    console.log('display');
 }
 
 const refreshPagination = () => {
@@ -620,7 +611,6 @@ function countPrimePages(digit, range) {
     const limit = Math.sqrt(MAX);
     const arr = new Array(MAX);
     let counter = 0;
-    console.log(digit, range, MAX, limit);
     for (let i = 2; i <= limit; i++) {
         if (!arr[i]) {
             for (var j = i * i; j < MAX; j += i) {
@@ -631,10 +621,8 @@ function countPrimePages(digit, range) {
     for (let i = MIN; i < MAX && counter < 992; i++) {
         if (!arr[i]) {
             counter++;
-            console.log(i);
         }
     }
-    console.log(counter);
     return counter;
 }
 
@@ -716,13 +704,6 @@ const handleCheckboxVisibility = () =>{
     }
 }
 
-const handleWindowClick = e => {
-    const select = document.querySelector('.c-dropdown__select')
-    if (!select.contains(e.target)) {
-        select.classList.remove('open');
-    }
-}
-
 const getRangeDigits = (range) => {
     const digits = [];
     let minDigits = getDigitCount(range[0]);
@@ -757,35 +738,6 @@ const getMinValue = (digits, min = 0) => {
     }
     const start = Math.pow(10, digits - 1);
     return min === 0 && digits == 1 ? min : start < min ? min : start;
-}
-
-const handleCheckboxToggle = (btn) => {
-    const isChecked = btn.parentNode.classList[1];
-    const all_btn = document.getElementById('All');
-
-    if (btn.id !== "All" && all_btn.parentNode.classList[1]) {
-        all_btn.parentNode.classList.remove("h-pushed");
-        all_btn.checked = false;
-    }
-    if (btn.id === "All" && isChecked) {
-        checkboxDigits.forEach(check => {
-            check.parentNode.classList.remove("h-pushed");
-            check.checked = false;
-        })
-    } else if (btn.id === "All" && isChecked === undefined) {
-        checkboxDigits.forEach(check => {
-            if(!check.parentNode.classList.contains('h-hide')){
-                check.parentNode.classList.add("h-pushed");
-                check.checked = true;
-            }
-        })
-    } else {
-        btn.parentNode.classList.toggle("h-pushed");
-        if (!btn.parentNode.classList.contains("h-pushed") && btn.checked){
-            btn.checked = false;
-        }
-    }
-    removeAlert();
 }
 
 const isArrayEmpty = (digits) => {
@@ -878,49 +830,10 @@ const toggleMobileNav = () =>{
     btns.classList.toggle('js-btns');
 }
 
-submitBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    handleClickGenerateList();
-})
-
-for (const option of selectOptions) {
-    option.addEventListener('click', (e) => selectItem(e));
-}
-
-checkboxDigits.forEach(btn => {
-    btn.addEventListener("click", (event) => handleCheckboxToggle(event.target));
-})
-
-selectToggler.addEventListener('click', () => {
-    toggleSelectMenu();
-    removeAlert();
-});
-
 researchNumberBtn.addEventListener('click', handleResearchNumber);
 
 researchHideBtn.addEventListener('click', hideResearchTable);
 
-pageNextBtn.addEventListener('click', displayNextPage);
-
-pagePreviousBtn.addEventListener('click', displayPreviousPage);
-
-pageNumberBtn.forEach((number) => {
-    number.addEventListener('click', (e) => displayClickedPage(e));
-});
-
 mobileOpenNavBtn.addEventListener('click', toggleMobileNav);
 
 mobileCloseNavBtn.addEventListener('click', toggleMobileNav);
-
-max.addEventListener('click', removeAlert);
-
-window.addEventListener('click', e => handleWindowClick(e));
-
-function showChecked() {
-    const digits = [];
-    const checkboxItems = document.querySelectorAll('input[type="checkbox"]');
-
-    checkboxItems.forEach(item => {
-        item.checked ? digits.push(parseInt(item.id)) : ""
-    })
-}
