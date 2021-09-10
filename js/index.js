@@ -2,6 +2,7 @@
 
 const researchNumberBtn = document.querySelector('.c-search__btn');
 const researchHideBtn = document.querySelector('.c-result__exit');
+const researchField = document.querySelector('.c-search__input');
 const mobileOpenNavBtn = document.querySelector('.c-nav__btn-open');
 const mobileCloseNavBtn = document.querySelector('.c-nav__btn-close');
 
@@ -33,12 +34,14 @@ const displayNextPage = () => {
 }
 
 const refreshPagination = () => {
+    console.log('refresh')
     const sequence = document.querySelector('.c-dropdown__select-trigger').textContent.trim().replace(/ /g, "");
     const MIN = document.querySelector('.c-output').lastChild.textContent;
     const digits = getCheckedDigits();
     const range = getRange(parseInt(MIN) + 1, getRangeOfDigits()[1]);
     const PAGE = 248;
     const pages = Math.ceil(getPagesCount(sequence, digits, range) / PAGE);
+    console.log(pages);
     if (pages <= 0) {
         return 0;
     }
@@ -195,19 +198,19 @@ const getPagesCount = (sequence, digits, range) => {
         } else {
             counter += callbacks[`count${sequence}`](digits, range);
         }
+        console.log(digitsArr);
     });
     return counter;
 }
 
 const getCheckedDigits = () => {
     const checkboxItems = document.querySelectorAll('input[type="checkbox"]');
-    const all = document.getElementById('All');
     const digits = [];
 
-    if (all.checked)
-        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     checkboxItems.forEach(item => {
-        item.checked ? digits.push(parseInt(item.id)) : ""
+        if (item.id !== 'All'){
+            item.checked ? digits.push(parseInt(item.id)) : ""
+        }
     })
     return digits;
 }
@@ -435,9 +438,14 @@ function countPalindromePages(digit, range) {
     const digits = (MAX + "").length;
     const divisor = Math.pow(10, Math.floor(digits * 0.5));
     /*Simple formula based on observations of palindrome patterns below*/
+    console.log(Math.floor(MAX / divisor), Math.floor(MIN / divisor), isSecondNumberHalfBigger(MAX + "", digits - 1));
     const pages = 
         Math.floor(MAX / divisor) - Math.floor(MIN / divisor)
         + isSecondNumberHalfBigger(MAX + "", digits - 1);
+    console.log("result:", pages, digit);
+    if (pages < 0){
+        return 0;
+    }
     return pages;
 }
 
@@ -676,9 +684,9 @@ const selectItem = e => {
 
 const handleCheckboxVisibility = () =>{
     const selected = document.querySelector('.selected').textContent;
-    const num8 = document.getElementById('8');
-    const num9 = document.getElementById('9');
     const num10 = document.getElementById('10');
+    const num9 = document.getElementById('9');
+    const num8 = document.getElementById('8');
     if (selected === 'Palindrome' || selected === 'Prime'){
         if (num9.parentNode.classList.contains('h-pushed')){
             handleCheckboxToggle(num9);
@@ -699,6 +707,7 @@ const handleCheckboxVisibility = () =>{
         num10.parentNode.classList.add('h-hide');
     }
     else{
+        num8.parentNode.classList.remove('h-hide');
         num9.parentNode.classList.remove('h-hide');
         num10.parentNode.classList.remove('h-hide');
     }
@@ -833,6 +842,13 @@ const toggleMobileNav = () =>{
 researchNumberBtn.addEventListener('click', handleResearchNumber);
 
 researchHideBtn.addEventListener('click', hideResearchTable);
+
+researchField.addEventListener("keyup", event=> {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+        handleResearchNumber();
+    }
+});
 
 mobileOpenNavBtn.addEventListener('click', toggleMobileNav);
 
