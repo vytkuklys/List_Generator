@@ -16,22 +16,24 @@
 
 <body>
   <header id="top">
-    <div class="c-logo__wrapper">
-      <div class="c-logo__infinity"></div>
-      <div class="c-search">
-        <input class="c-search__input" type="text" onkeyup="this.value=this.value.replace(/[^\d]+/,'')"
-          placeholder="Enter Number">
-        <button class="c-search__btn" aria-label="Search Results"><i class="fas fa-search"></i></button>
+    <div class="c-header__wrapper">
+      <div class="c-logo__wrapper">
+        <div class="c-logo__infinity"><a href="/" class="c-logo__link"></a></div>
+        <div class="c-search">
+          <input class="c-search__input" type="text" onkeyup="this.value=this.value.replace(/[^\d]+/,'')"
+            placeholder="Enter Number">
+          <button class="c-search__btn" aria-label="Search Results"><i class="fas fa-search"></i></button>
+        </div>
       </div>
-    </div>
-    <ul class="c-nav__items">
-      <li class="c-nav__item"><a class="c-nav__link" href="index.html">Home</a></li>
-      <li class="c-nav__item h-border-bottom"><a class="c-nav__link" href="#">About</a></li>
-      <li class="c-nav__item"><a class="c-nav__link l-padding" href="contact.html">Contact Us</a></li>
-    </ul>
-    <div class="c-nav__btns">
-      <button class="c-nav__btn c-nav__btn-close" onfocus="blur()" aria-label="close">X</button>
-      <button class="c-nav__btn c-nav__btn-open" onfocus="blur()" aria-label="open"><i class="fas fa-bars"></i></button>
+      <ul class="c-nav__items">
+        <li class="c-nav__item"><a class="c-nav__link" href="/">Home</a></li>
+        <li class="c-nav__item h-border-bottom"><a class="c-nav__link" href="#">About</a></li>
+        <li class="c-nav__item"><a class="c-nav__link l-padding" href="contact.html">Contact Us</a></li>
+      </ul>
+      <div class="c-nav__btns">
+        <button class="c-nav__btn c-nav__btn-close" onfocus="blur()" aria-label="close">X</button>
+        <button class="c-nav__btn c-nav__btn-open" onfocus="blur()" aria-label="open"><i class="fas fa-bars"></i></button>
+      </div>
     </div>
   </header>
   <main class="c-about__main">
