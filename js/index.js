@@ -604,7 +604,7 @@ function getPrimeItems(digit, range, length) {
             }
         }
     }
-    for (let i = MIN; i <= MAX && length + counter < 248; i++) {
+    for (let i = MIN > 1 ? MIN : 2; i <= MAX && length + counter < 248; i++) {
         if (!arr[i]) {
             result.push(i);
             counter++;
